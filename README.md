@@ -4,11 +4,11 @@ This is a basic outline for building a Nginx docker image for one, or more, stat
 
 Assuming you have Docker installed and the daemon running then to build the container use from the roor folder:
 
-  $ docker build -t IMAGE-NAME .
+    docker build -t IMAGE-NAME .
 
 And then run it with the usual commands:
 
-  $ docker run -d IMAGE-NAME
+    docker run -d -p 80:80 -p 443:443 IMAGE-NAME
 
 The docker build context includes the Nginx configuration files (see [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/add-misc-headers))
 under the `config` folder and a `srv` folder for the sites to serve.
