@@ -1,8 +1,9 @@
 # Nginx base image.
 FROM nginx
 # Nginx configuration.
-COPY config/ /etc/nginx
-# Site sites and certificates.
-COPY srv /
+COPY config /etc/nginx
+# Copy sites and certificates.
+RUN mkdir -p /srv
+COPY srv srv/
 # Protect private key.
 RUN chmod 400 /srv/certs/jurassic-john.site.key
