@@ -8,7 +8,7 @@ Assuming you have Docker installed and the daemon running then to build the cont
 
 And then run it with the usual commands:
 
-    docker run -d -p 80:80 -p 443:443 IMAGE-NAME
+    docker run -d --restart unless-stopped -p 80:80 -p 443:443 IMAGE-NAME
 
 The docker build context includes the Nginx configuration files (see [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/add-misc-headers))
 under the `config` folder and a `srv` folder for the sites to serve.
