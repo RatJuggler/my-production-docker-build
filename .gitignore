@@ -1,3 +1,6 @@
+# Ignore project files.
+.idea/
+
 # Make sure we don't commit any certificates or keys.
 srv/certs/*
 !srv/certs/README.md
@@ -5,3 +8,5 @@ srv/certs/*
 # Make sure we don't commit any site files with this project.
 srv/jurassic-john.site/*
 !srv/jurassic-john.site/README.md
+srv/f4rside.com/*
+!srv/f4rside.com/README.md
