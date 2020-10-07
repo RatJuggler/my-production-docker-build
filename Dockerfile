@@ -5,5 +5,5 @@ COPY config /etc/nginx
 # Copy sites and certificates.
 RUN mkdir -p /srv
 COPY srv srv/
-# Protect private key.
-RUN chmod 400 /srv/certs/jurassic-john.site.key
+# Protect private keys.
+RUN chmod 400 /srv/certs/*.key
