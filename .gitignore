@@ -10,3 +10,6 @@ srv/jurassic-john.site/*
 !srv/jurassic-john.site/README.md
 srv/f4rside.com/*
 !srv/f4rside.com/README.md
+
+# Make sure we don't commit any Nginx configuration with this project.
+config
