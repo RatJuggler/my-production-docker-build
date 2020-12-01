@@ -13,6 +13,8 @@ rm -rf src
 mkdir src
 rm -rf config
 mkdir config
+rm -rf srv
+mkdir srv
 
 printf "\nPulling resources required...\n"
 # Checkout a shallow copy of f4rside-site.
@@ -39,6 +41,9 @@ cp src/server-config-nginx/conf.d/.default.conf config/conf.d
 cp src/server-config-nginx/conf.d/no-ssl.default.conf config/conf.d
 cp src/server-config-nginx/mime.types config
 cp src/server-config-nginx/nginx.conf config
+
+printf "\nCopying certificates...\n"
+cp -r nginx/certs srv/certs
 
 printf "\nRemoving sources after build and copy...\n"
 rm -rf src
