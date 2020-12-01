@@ -28,6 +28,8 @@ cp -r src/developer-portfolio/dist srv/jurassic-john.site
 # Copy Nginx configuration files.
 echo "Copy Nginx configuration..."
 cp -r src/server-config-nginx/h5bp config/h5bp
-cp src/server-config-nginx/conf.d config/conf.d
+cp -r nginx/conf.d config/config.d
+cp src/server-config-nginx/conf.d/.default.conf config/conf.d
+cp src/server-config-nginx/conf.d/no-ssl.default.conf config/conf.d
 cp src/server-config-nginx/mime.types config
 cp src/server-config-nginx/nginx.conf config
