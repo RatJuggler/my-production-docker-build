@@ -31,11 +31,11 @@ npm install
 node_modules/.bin/gulp build
 cd ../..
 # Copy developer-portfolio distribution files.
-cp -r src/developer-portfolio/dist srv/jurassic-john.site
+cp -r src/developer-portfolio/dist/public srv/jurassic-john.site
 
 printf "\nClone and copy files for Nginx configuration...\n"
 # Checkout a shallow copy of the base Nginx configuration.
-git clone --single-branch --branch production --depth 1 https://github.com/RatJuggler/server-configs-nginx.git src/server-config-nginx
+git clone --single-branch --depth 1 --branch production https://github.com/RatJuggler/server-configs-nginx.git src/server-config-nginx
 # Copy the required files.
 cp -r src/server-config-nginx/h5bp config/h5bp
 cp -r nginx/conf.d config/conf.d
