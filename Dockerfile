@@ -1,11 +1,11 @@
-# Build any applications requiring Node.
+# Applications requiring a build.
 FROM node:12.20.0 AS builder
 
 # developer-portfolio build.
 
 # Location of source code.
 WORKDIR /developer-portfolio
-# Install dependencies.
+# Install build dependencies.
 COPY src/developer-portfolio/package.json .
 RUN npm install
 # Copy the sources and run the build.
@@ -16,17 +16,19 @@ RUN node_modules/.bin/gulp build
 # Create the Nginx application image.
 FROM nginx
 
-# Create a folder to server the site(s) from.
+# Create a folder to serve the site(s) from.
 WORKDIR /srv
 
-# Copy f4rside-site distribution files.
+# Copy the f4rside-site distribution files.
 COPY src/f4rside-site/src/ /srv/f4rside.com/
 
-# Copy developer-portfolio distribution files.
+# Copy the developer-portfolio distribution files.
 COPY --from=builder /developer-portfolio/dist/public/ /srv/jurassic-john.site/
 
-# Copy Nginx configuration files.
-COPY config/ /etc/nginx/
+# Copy the Nginx configuration files.
+COPY src/server-config-nginx/h5bp/ /etc/nginx/h5bp/
+COPY src/server-config-nginx/conf.d/ nginx/conf.d/ /etc/nginx/conf.d/
+COPY src/server-config-nginx/mime.types src/server-config-nginx/nginx.conf /etc/nginx/
 
 # Copy the certificates.
 COPY nginx/certs/ certs/
