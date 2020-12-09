@@ -27,8 +27,8 @@ COPY --from=builder /developer-portfolio/dist/public/ /srv/jurassic-john.site/
 
 # Copy the Nginx configuration files.
 COPY src/server-config-nginx/h5bp/ /etc/nginx/h5bp/
-COPY src/server-config-nginx/conf.d/ nginx/conf.d/ /etc/nginx/conf.d/
 COPY src/server-config-nginx/mime.types src/server-config-nginx/nginx.conf /etc/nginx/
+COPY nginx/conf.d/ /etc/nginx/conf.d/
 
 # Copy the certificates.
 COPY nginx/certs/ certs/
