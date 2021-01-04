@@ -1,5 +1,5 @@
 # Applications requiring a build.
-FROM node:12-alpine AS builder
+FROM node:lts-alpine AS builder
 
 # developer-portfolio build.
 
@@ -14,7 +14,7 @@ RUN node_modules/.bin/gulp build
 
 
 # Create the Nginx application image.
-FROM nginx:alpine
+FROM nginx:stable-alpine
 
 # Create a folder to serve the site(s) from.
 WORKDIR /srv
