@@ -1,12 +1,12 @@
-# nginx-docker-build
+# my-production-docker-build
 
-This is a basic outline for building a Nginx docker image for one, or more, static websites.
+This is my attempt at a unified build process for the various projects I'm running on my Pi farm.
 
 Assuming you have Docker installed, and the daemon running, then to do a full build you would use the following from the root folder:
 
     ./build.sh IMAGE-NAME
 
-Then run the generated image with the usual command:
+The generated images can then be run with the usual command:
 
     docker run -d --restart unless-stopped -p 80:80 -p 443:443 IMAGE-NAME
 
