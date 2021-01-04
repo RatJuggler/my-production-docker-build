@@ -16,6 +16,8 @@ RUN node_modules/.bin/gulp build
 # Create the Nginx application image.
 FROM nginx:stable-alpine
 
+EXPOSE 80
+
 # Create a folder to serve the site(s) from.
 WORKDIR /srv
 
