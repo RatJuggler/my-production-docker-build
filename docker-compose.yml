@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  nginx-public-files:
+    image: nginx-public-files
+    build:
+      context: .
+      dockerfile: .Dockerfile
+      target: nginx-public-files
+    ports:
+      - "8080:80"
+    networks:
+      - portfolio
+    restart: unless-stopped
+
+  node-application:
+    image: node-application
+    build:
+      context: .
+      dockerfile: .Dockerfile
+      target: node-application
+    networks:
+      - portfolio
+    restart: unless-stopped
+
+networks:
+  portfolio:
