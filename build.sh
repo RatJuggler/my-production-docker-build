@@ -1,12 +1,7 @@
 #!/bin/bash
 
-printf "My Nginx Static Site Docker Builder\n"
-printf "===================================\n"
-
-if [[ -z "$1" ]]; then
-  printf "Please supply a docker image name!\n"
-  exit 1
-fi
+printf "My Production Docker Builder\n"
+printf "============================\n"
 
 printf "\nClearing down any previous build...\n"
 rm -rf src
@@ -22,6 +17,6 @@ printf "\nCloning the project for the Nginx configuration...\n"
 git clone --single-branch --depth 1 --branch production https://github.com/RatJuggler/server-configs-nginx.git src/server-config-nginx
 
 printf "\nRunning the Docker build...!\n"
-docker build -t "$1" .
+docker build .
 
 printf "\nAll Done!\n"
