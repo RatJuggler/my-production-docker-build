@@ -6,8 +6,11 @@ The goal to start with is to build all the images I want by cloning repos and ru
 
     ./build.sh
 
-Currently, the script pulls down the sources and then any building and copying is done in the multi-stage docker file. This 
-includes the Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
+The script clones only the minimum source code required (no history) and then any building and copying is done in the multi-stage 
+docker file. The source code cloned also includes my production Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
+
+At the moment I'm running this on a single Raspberry PI 3 Model B+, so I'm conserving resources by using a single instance of Nginx 
+to serve the static content for two sites and dynamic content from a Node instance.
 
 Note, the site certificates and private keys are bundled with the image so this is not an ideal solution from a security 
 perspective. Anyone with access to the generated Docker image can retrieve them. This also makes updating the certificates 
