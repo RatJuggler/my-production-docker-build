@@ -5,7 +5,7 @@ services:
     image: nginx-public-files
     build:
       context: .
-      dockerfile: .Dockerfile
+      dockerfile: ./Dockerfile
       target: nginx-public-files
     ports:
       - "8080:80"
@@ -17,7 +17,7 @@ services:
     image: node-application
     build:
       context: .
-      dockerfile: .Dockerfile
+      dockerfile: ./Dockerfile
       target: node-application
     networks:
       - portfolio

@@ -3,9 +3,9 @@ FROM node:lts-alpine AS builder
 
 # developer-portfolio build.
 
-# Location of source code.
+# Location of the source code.
 WORKDIR /developer-portfolio
-# Install build dependencies.
+# Install the build dependencies.
 COPY src/developer-portfolio/package.json .
 RUN npm install
 # Copy the sources and run the build.
@@ -24,21 +24,19 @@ CMD ["node", "./app/app.js", "app/"]
 # Create a folder to serve the application from.
 WORKDIR /srv
 # Install the runtime dependencies.
-COPY package.json .
+COPY src/developer-portfolio/package.json .
 RUN npm install
+# Copy the developer-portfolio application files from the build.
+COPY --from=builder /developer-portfolio/dist/ .
 
-# Copy the distribution files.
-COPY --from=builder /build/dist/ .
 
-
-# Create the Nginx application image.
+# Create the Nginx web server image.
 FROM nginx:stable-alpine AS nginx-public-files
 
 EXPOSE 80
 
 # Create a folder to serve the site(s) from.
 WORKDIR /srv
-
 # Copy the certificates.
 COPY nginx/certs/ certs/
 # Protect any private keys.
@@ -47,10 +45,11 @@ RUN chmod 400 /srv/certs/*.key
 # Copy the Nginx configuration files.
 COPY src/server-config-nginx/h5bp/ /etc/nginx/h5bp/
 COPY src/server-config-nginx/mime.types src/server-config-nginx/nginx.conf /etc/nginx/
+# Copy the site specific Nginx configuration files.
 COPY nginx/conf.d/ /etc/nginx/conf.d/
 
-# Copy the f4rside-site distribution files.
+# Copy the static f4rside-site distribution files directly from the project.
 COPY src/f4rside-site/src/ /srv/f4rside.com/
 
-# Copy the developer-portfolio distribution files.
+# Copy the static developer-portfolio distribution files from the build.
 COPY --from=builder /developer-portfolio/dist/public/ /srv/jurassic-john.site/

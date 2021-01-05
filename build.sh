@@ -17,6 +17,6 @@ printf "\nCloning the project for the Nginx configuration...\n"
 git clone --single-branch --depth 1 --branch production https://github.com/RatJuggler/server-configs-nginx.git src/server-config-nginx
 
 printf "\nRunning the Docker build...!\n"
-docker build .
+docker-compose build
 
 printf "\nAll Done!\n"
