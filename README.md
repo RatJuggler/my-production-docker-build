@@ -1,17 +1,13 @@
 # my-production-docker-build
 
-This is my attempt at a unified build process for the various projects I'm running on my Pi farm.
+This is still a work in progress and is my attempt at a unified build process for the various projects I'm running on my Pi farm.
 
-Assuming you have Docker installed, and the daemon running, then to do a full build you would use the following from the root folder:
+The goal to start with is to build all the images I want by cloning repos and running all the builds with a single command:
 
-    ./build.sh IMAGE-NAME
+    ./build.sh
 
-The generated images can then be run with the usual command:
-
-    docker run -d --restart unless-stopped -p 80:80 -p 443:443 IMAGE-NAME
-
-The script pulls down the site sources and then any building and copying is done in the multi-stage docker file. This includes the 
-Nginx configuration files (see [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production)).
+Currently, the script pulls down the sources and then any building and copying is done in the multi-stage docker file. This 
+includes the Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
 
 Note, the site certificates and private keys are bundled with the image so this is not an ideal solution from a security 
 perspective. Anyone with access to the generated Docker image can retrieve them. This also makes updating the certificates 
