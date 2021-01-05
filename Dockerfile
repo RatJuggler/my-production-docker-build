@@ -13,8 +13,26 @@ COPY src/developer-portfolio .
 RUN node_modules/.bin/gulp build
 
 
+# Create the Node application image.
+FROM node:lts-alpine AS node-application
+
+ENV NODE_ENV=production
+
+EXPOSE 3000
+CMD ["node", "./app/app.js", "app/"]
+
+# Create a folder to serve the application from.
+WORKDIR /srv
+# Install the runtime dependencies.
+COPY package.json .
+RUN npm install
+
+# Copy the distribution files.
+COPY --from=builder /build/dist/ .
+
+
 # Create the Nginx application image.
-FROM nginx:stable-alpine
+FROM nginx:stable-alpine AS nginx-public-files
 
 EXPOSE 80
 
