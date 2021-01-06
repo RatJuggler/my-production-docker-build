@@ -13,7 +13,15 @@ docker file. The source code cloned also includes my production Nginx configurat
 At the moment I'm running this on a single Raspberry PI 3 Model B+, so I'm conserving resources by using a single instance of Nginx 
 to serve the static content for two sites, and the dynamic content from a Node instance.
 
-Future goals:
+After building the environment can be started and stopped with the usual commands:
+
+    docker-compose start -d
+
+    docker-compose stop
+
+
+### Future goals:
+
 - tagging of images.
 - push images to my own registry.
 - deployment to a docker swarm across several Raspberry Pi's.
@@ -21,7 +29,9 @@ Future goals:
 - refactor build code back to project repositories allowing for test and production images.
 - add monitoring.
 
-Note, the site certificates and private keys are bundled with the Nginx image so this is not an ideal solution from a security 
+### Note
+
+The site certificates and private keys are bundled with the Nginx image so this is not an ideal solution from a security 
 perspective. Anyone with access to the generated Docker image can retrieve them. This also makes updating the certificates 
 automatically harder as the Docker image must be re-created to include the updates and any running containers then restarted with 
 the new image.
