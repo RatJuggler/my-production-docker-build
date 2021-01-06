@@ -18,7 +18,8 @@ services:
       dockerfile: ./Dockerfile
       target: nginx-public-files
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
     depends_on:
       - node-application
     networks:
