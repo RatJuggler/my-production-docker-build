@@ -18,6 +18,9 @@ FROM node:lts-alpine AS node-application
 
 ENV NODE_ENV=production
 
+ARG BUILD_TAG=local
+LABEL build_tag=${BUILD_TAG}
+
 EXPOSE 3000
 CMD ["node", "./app/app.js", "app/"]
 
@@ -32,6 +35,9 @@ COPY --from=builder /developer-portfolio/dist/ .
 
 # Create the Nginx web server image.
 FROM nginx:stable-alpine AS nginx-public-files
+
+ARG BUILD_TAG=local
+LABEL build_tag=${BUILD_TAG}
 
 EXPOSE 80
 

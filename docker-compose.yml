@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   node-application:
-    image: node-application
+    image: node-application:${BUILD_TAG:-local}
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 
   nginx-public-files:
-    image: nginx-public-files
+    image: nginx-public-files:${BUILD_TAG:-local}
     build:
       context: .
       dockerfile: ./Dockerfile
