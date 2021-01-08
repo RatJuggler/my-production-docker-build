@@ -3,6 +3,11 @@
 printf "My Production Docker Builder\n"
 printf "============================\n"
 
+if [[ -z "$1" ]]; then
+  printf "Please supply an image tag!\n"
+  exit 1
+fi
+
 printf "\nClearing down any previous build...\n"
 rm -rf src
 mkdir src
@@ -16,7 +21,7 @@ git clone --single-branch --depth 1 https://github.com/RatJuggler/developer-port
 printf "\nCloning the project for the Nginx configuration...\n"
 git clone --single-branch --depth 1 --branch production https://github.com/RatJuggler/server-configs-nginx.git src/server-config-nginx
 
-printf "\nRunning the Docker build...!\n"
-docker-compose build
+printf "\nBuilding images...\n"
+docker-compose -f docker-compose.yml build --build-arg BUILD_TAG="$1"
 
 printf "\nAll Done!\n"
