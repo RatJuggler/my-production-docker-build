@@ -22,12 +22,12 @@ After building the environment can be started and stopped with the usual command
 
 ### Future goals:
 
-- tagging of images.
+- refactor build code back to project repositories to allow for development, test and production images.
 - push images to my own registry.
 - deployment to a docker swarm across several Raspberry Pi's.
+- full image tagging including major, minor, patch and latest.
 - add Portainer as a management dashboard.
-- refactor build code back to project repositories allowing for test and production images.
-- add monitoring.
+- add monitoring and health checks.
 
 ### Note
 
