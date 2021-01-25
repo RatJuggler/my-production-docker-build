@@ -45,7 +45,7 @@ WORKDIR /srv
 # Copy the certificates.
 COPY nginx/certs/ certs/
 # Protect any private keys.
-RUN chmod 400 /srv/certs/*.key
+RUN chmod 400 certs/*.key
 # Copy the site specific Nginx configuration files.
 COPY nginx/conf.d/ /etc/nginx/conf.d/
 
