@@ -11,9 +11,10 @@ RUN git clone --single-branch --depth 1 --branch production https://github.com/R
 # Create the Nginx web server golden image and include the configuration files.
 FROM nginx:stable-alpine AS golden-nginx
 
-ARG BUILD_TAG=stable-alpine
+ARG BUILD_TAG=local
 LABEL build_tag=${BUILD_TAG}
 LABEL description="My Nginx Golden Image"
+LABEL maintainer="John Chase <ratteal@gmail.com>"
 
 EXPOSE 80
 
