@@ -19,6 +19,15 @@ After building the environment can be started and stopped with the usual command
 
     docker-compose stop
 
+### Golden Images
+
+I've started to define golden images for re-use and as best practice.
+
+#### golden-nginx
+
+Includes my production Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
+
+    docker image build -t golden-nginx:stable-alpine -f ./Golden.dockerfile .
 
 ### Future goals:
 
