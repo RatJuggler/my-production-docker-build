@@ -8,8 +8,8 @@ WORKDIR /src
 RUN git clone --single-branch --depth 1 --branch production https://github.com/RatJuggler/server-configs-nginx.git .
 
 
-# Create the Nginx web server image and include the configuration files.
-FROM nginx:stable-alpine AS nginx-public-files
+# Create the Nginx web server golden image and include the configuration files.
+FROM nginx:stable-alpine AS golden-nginx
 
 ARG BUILD_TAG=stable-alpine
 LABEL build_tag=${BUILD_TAG}
