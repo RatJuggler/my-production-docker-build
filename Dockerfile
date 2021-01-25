@@ -34,7 +34,7 @@ COPY --from=builder /developer-portfolio/dist/ .
 
 
 # Create the Nginx web server image.
-FROM nginx:stable-alpine AS nginx-public-files
+FROM golden-nginx:stable-alpine AS nginx-public-files
 
 ARG BUILD_TAG=local
 LABEL build_tag=${BUILD_TAG}
@@ -43,14 +43,11 @@ EXPOSE 80
 
 # Create a folder to serve the site(s) from.
 WORKDIR /srv
+
 # Copy the certificates.
 COPY nginx/certs/ certs/
 # Protect any private keys.
 RUN chmod 400 /srv/certs/*.key
-
-# Copy the Nginx configuration files.
-COPY src/server-config-nginx/h5bp/ /etc/nginx/h5bp/
-COPY src/server-config-nginx/mime.types src/server-config-nginx/nginx.conf /etc/nginx/
 # Copy the site specific Nginx configuration files.
 COPY nginx/conf.d/ /etc/nginx/conf.d/
 

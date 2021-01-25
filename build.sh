@@ -18,9 +18,6 @@ git clone --single-branch --depth 1 https://github.com/RatJuggler/f4rside-site.g
 printf "\nCloning the project for jurassic-john.site...\n"
 git clone --single-branch --depth 1 https://github.com/RatJuggler/developer-portfolio.git src/developer-portfolio
 
-printf "\nCloning the project for the Nginx configuration...\n"
-git clone --single-branch --depth 1 --branch production https://github.com/RatJuggler/server-configs-nginx.git src/server-config-nginx
-
 printf "\nBuilding images...\n"
 docker-compose -f docker-compose.yml build --build-arg BUILD_TAG="$1"
 
