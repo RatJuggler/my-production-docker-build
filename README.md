@@ -27,7 +27,7 @@ I've started to define golden images for re-use and as best practice.
 
 Includes my production Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
 
-    docker image build -t golden-nginx:stable-alpine -f ./Golden.dockerfile .
+    docker image build -t johnchase/golden-nginx:latest -f ./Golden.dockerfile .
 
 ### Future goals:
 

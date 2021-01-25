@@ -34,7 +34,7 @@ COPY --from=builder /developer-portfolio/dist/ .
 
 
 # Create the Nginx web server image.
-FROM golden-nginx:stable-alpine AS nginx-public-files
+FROM johnchase/golden-nginx:latest AS nginx-public-files
 
 ARG BUILD_TAG=local
 LABEL build_tag=${BUILD_TAG}
