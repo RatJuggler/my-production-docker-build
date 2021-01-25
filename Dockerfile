@@ -39,8 +39,6 @@ FROM johnchase/golden-nginx:latest AS nginx-public-files
 ARG BUILD_TAG=local
 LABEL build_tag=${BUILD_TAG}
 
-EXPOSE 80
-
 # Create a folder to serve the site(s) from.
 WORKDIR /srv
 
