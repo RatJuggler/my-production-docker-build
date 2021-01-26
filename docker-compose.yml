@@ -30,14 +30,13 @@ services:
     restart: unless-stopped
 
   ingress-proxy:
-    image: ${dockerId:-johnchase}/ingress-proxy:${BUILD_TAG:-local}
+    image: ingress-proxy-test:${BUILD_TAG:-local}
     build:
       context: .
-      dockerfile: ./Dockerfile
-      target: ingress-proxy
+      dockerfile: Test.dockerfile
+      target: ingress-proxy-test
     ports:
       - "80:80"
-      - "443:443"
     depends_on:
       - portfolio-site
       - f4rside-site

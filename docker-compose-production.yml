@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  ingress-proxy:
+    image: ingress-proxy-production:${BUILD_TAG:-local}
+    build:
+      context: .
+      dockerfile: Production.dockerfile
+      target: ingress-proxy-production
+    ports:
+      - "80:80"
+      - "443:443"
