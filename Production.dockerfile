@@ -1,5 +1,5 @@
 # Create the Nginx production ingress proxy image.
-FROM johnchase/golden-nginx:latest AS production-ingress-proxy
+FROM johnchase/golden-nginx:latest AS ingress-proxy-production
 
 ARG BUILD_TAG=local
 LABEL build_tag=${BUILD_TAG}
