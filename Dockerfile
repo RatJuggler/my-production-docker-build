@@ -49,8 +49,5 @@ RUN chmod 400 certs/*.key
 # Copy the site specific Nginx configuration files.
 COPY nginx/conf.d/ /etc/nginx/conf.d/
 
-# Copy the static f4rside-site distribution files directly from the project.
-COPY src/f4rside-site/src/ /srv/f4rside.com/
-
 # Copy the static developer-portfolio distribution files from the build.
 COPY --from=builder /developer-portfolio/dist/public/ /srv/jurassic-john.site/

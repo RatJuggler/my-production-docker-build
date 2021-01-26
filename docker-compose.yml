@@ -11,6 +11,12 @@ services:
       - external-sites
     restart: unless-stopped
 
+  f4rside-site:
+    image: ${dockerId:-johnchase}/f4rside-site:${BUILD_TAG:-latest}
+    networks:
+      - external-sites
+    restart: unless-stopped
+
   nginx-public-files:
     image: nginx-public-files:${BUILD_TAG:-local}
     build:
