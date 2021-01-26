@@ -1,33 +1,23 @@
 version: '3.8'
 
 services:
-  node-application:
-    image: node-application:${BUILD_TAG:-local}
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: node-application
-    networks:
-      - external-sites
-    restart: unless-stopped
-
   f4rside-site:
     image: ${dockerId:-johnchase}/f4rside-site:${BUILD_TAG:-latest}
     networks:
       - external-sites
     restart: unless-stopped
 
-  nginx-public-files:
-    image: nginx-public-files:${BUILD_TAG:-local}
+  ingress-proxy:
+    image: ${dockerId:-johnchase}/ingress-proxy:${BUILD_TAG:-local}
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: nginx-public-files
+      target: ingress-proxy
     ports:
       - "80:80"
       - "443:443"
     depends_on:
-      - node-application
+      - f4rside-site
     networks:
       - external-sites
     restart: unless-stopped
