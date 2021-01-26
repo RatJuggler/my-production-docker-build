@@ -1,6 +1,28 @@
 version: '3.8'
 
 services:
+  portfolio-application:
+    image: ${dockerId:-johnchase}/portfolio-application:${BUILD_TAG:-latest}
+    networks:
+      - portfolio
+    restart: unless-stopped
+
+  portfolio-static:
+    image: ${dockerId:-johnchase}/portfolio-static:${BUILD_TAG:-latest}
+    networks:
+      - portfolio
+    restart: unless-stopped
+
+  portfolio-site:
+    image: ${dockerId:-johnchase}/portfolio-site:${BUILD_TAG:-latest}
+    depends_on:
+      - portfolio-application
+      - portfolio-static
+    networks:
+      - portfolio
+      - external-sites
+    restart: unless-stopped
+
   f4rside-site:
     image: ${dockerId:-johnchase}/f4rside-site:${BUILD_TAG:-latest}
     networks:
@@ -17,10 +39,12 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
+      - portfolio-site
       - f4rside-site
     networks:
       - external-sites
     restart: unless-stopped
 
 networks:
+  portfolio:
   external-sites:
