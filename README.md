@@ -3,14 +3,23 @@
 This is still a work in progress and is my attempt at a unified build/deployment process for the various projects I'm running on my 
 Raspberry Pi farm.
 
-Building of application/website images is done in the respective projects and this project only builds an ingress proxy using my 
-production Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
+At the moment I have a build script which can be run to create all the images required: 
 
-Everything is then tied together with a base docker-compose file for testing supplemented by an override file for production.
+    ./build.sh
 
-You can test how the override file will be applied using:
+The script clones only the minimum source code required (no history) for each project and then uses the projects compose file to 
+create the images for that project.
 
-    docker-compose -f ./docker-compose.yml -f ./docker-compose-production.yml config
+Everything is then tied together with a base docker-compose file in this project to orchestrate the images. This file also includes 
+an additional ingress proxy image to route requests to the other projects. The base file creates this image without any SSL/CSP 
+security for testing with an override file for production. The production file creates the ingress proxy image with the SSL 
+certificates and CSP settings included (see Note below).
+
+You can see how the override file will be applied using:
+
+    docker-compose -f docker-compose.yml -f docker-compose-production.yml config
+
+
 
 ### Golden Images
 
@@ -41,8 +50,8 @@ And the following on a Raspberry Pi:
 
     docker image push johnchase/golden-nginx:linux-arm
 
-To make a multi-arch image show up on docker hub I first pulled the ARM image down to the intel machine and then created and pushed 
-a manifest:
+Then to make a multi-arch image show up on docker hub I first pulled the ARM image down to the intel machine and then created and 
+pushed a manifest:
 
     docker image pull johnchase/golden-nginx:linux-arm
 
