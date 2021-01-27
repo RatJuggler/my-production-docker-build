@@ -18,9 +18,20 @@ I've started to define golden images for re-use and as best practice.
 
 #### golden-nginx
 
-Includes my production Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
+This includes my production Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
 
-    docker image build -t johnchase/golden-nginx:latest -f ./Golden.dockerfile .
+I needed to make this a multi-architecture image so that I can use it on the Pi farm. The build uses `git` to clone the Nginx 
+configuration files, so I looked at using [alpine/git](https://hub.docker.com/r/alpine/git) but that doesn't have strong support 
+for 32-bit ARM (arm32v7, armv7, armhf) so I've used a base [alpine](https://hub.docker.com/_/alpine) image and then installed `git` 
+on top of that. An additional caveat was that I then had to use *alpine* 3.12 as there is an [issue](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements) 
+with an out-of-date *libseccomp* on Raspberry Pi OS when trying to use the latest (3.13) version.
+
+For the final [Nginx](https://hub.docker.com/_/nginx) image I'm using the *stable-alpine* version which is [based on](https://github.com/nginxinc/docker-nginx/blob/master/stable/alpine/Dockerfile)
+*alpine* 3.11.
+
+    docker image build -t johnchase/golden-nginx:linux-amd64 -f docker/nginx/Golden.dockerfile .
+
+    docker image build -t johnchase/golden-nginx:linux-arm -f docker/nginx/Golden.dockerfile .
 
 ### Future goals:
 
