@@ -8,18 +8,17 @@ At the moment I have a build script which can be run to create all the images re
     ./build.sh
 
 The script clones only the minimum source code required (no history) for each project and then uses the projects compose file to 
-create the images for that project.
+create the images for that project. Environment variables must be exported for use in the compose file but can be injected directly
+into the build files via the build-arg option.
 
-Everything is then tied together with a base docker-compose file in this project to orchestrate the images. This file also includes 
-an additional ingress proxy image to route requests to the other projects. The base file creates this image without any SSL/CSP 
-security for testing with an override file for production. The production file creates the ingress proxy image with the SSL 
-certificates and CSP settings included (see Note below).
+Everything is then tied together in this project with a base docker-compose file to orchestrate the images. This file also includes 
+an additional ingress proxy image to route requests to each project. The base file creates this image without any SSL/CSP security 
+for testing with an override file available for production. The production override file creates the ingress proxy image with the 
+SSL certificates and CSP settings included (see Note on security below).
 
 You can see how the override file will be applied using:
 
     docker-compose -f docker-compose.yml -f docker-compose-production.yml config
-
-
 
 ### Golden Images
 
@@ -69,7 +68,7 @@ Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-arch image
 - add Portainer as a management dashboard.
 - add monitoring and health checks.
 
-### Note
+### Note on security
 
 The site certificates and private keys are bundled with the Nginx ingress proxy image so this is not an ideal solution from a 
 security perspective. Anyone with access to the generated Docker image can retrieve them. This also makes updating the certificates 

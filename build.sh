@@ -6,10 +6,10 @@ printf "============================\n\n"
 ARCH=$(uname -m)
 case "$ARCH" in
   x86_64)
-    BUILD_TAG="linux-amd64"
+    export BUILD_TAG="linux-amd64"
     ;;
   arm7l)
-    BUILD_TAG="linux-arm"
+    export BUILD_TAG="linux-arm"
     ;;
   *)
     printf "Unexpected architecture '%s' encountered!\n" $ARCH
