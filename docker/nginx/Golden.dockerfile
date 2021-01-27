@@ -1,5 +1,5 @@
 # Add git to base alpine image.
-FROM alpine:latest AS builder
+FROM alpine:3.12 AS builder
 
 RUN apk --no-cache add git
 
