@@ -29,9 +29,28 @@ with an out-of-date *libseccomp* on Raspberry Pi OS when trying to use the lates
 For the final [Nginx](https://hub.docker.com/_/nginx) image I'm using the *stable-alpine* version which is [based on](https://github.com/nginxinc/docker-nginx/blob/master/stable/alpine/Dockerfile)
 *alpine* 3.11.
 
+To build the images I ran the following on an intel linux machine:
+
     docker image build -t johnchase/golden-nginx:linux-amd64 -f docker/nginx/Golden.dockerfile .
 
+    docker image push johnchase/golden-nginx:linux-amd64
+
+And the following on a Raspberry Pi:
+
     docker image build -t johnchase/golden-nginx:linux-arm -f docker/nginx/Golden.dockerfile .
+
+    docker image push johnchase/golden-nginx:linux-arm
+
+To make a multi-arch image show up on docker hub I first pulled the ARM image down to the intel machine and then created and pushed 
+a manifest:
+
+    docker image pull johnchase/golden-nginx:linux-arm
+
+    docker manifest create johnchase/golden-nginx johnchase/golden-nginx:linux-amd64 johnchase/golden-nginx:linux-arm
+
+    docker manifest push johnchase/golden-nginx
+
+Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-arch image.
 
 ### Future goals:
 
