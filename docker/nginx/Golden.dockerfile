@@ -1,5 +1,7 @@
-# Image with git.
-FROM alpine/git:latest AS builder
+# Add git to base alpine image.
+FROM alpine:latest AS builder
+
+RUN apk --no-cache add git
 
 # Create a work area we'll be able to copy files from.
 WORKDIR /src
