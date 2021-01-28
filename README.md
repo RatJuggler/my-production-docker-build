@@ -12,13 +12,22 @@ create the images for that project. Environment variables must be exported for u
 into the build files via the build-arg option.
 
 Everything is then tied together in this project with a base docker-compose file to orchestrate the images. This file also includes 
-an additional ingress proxy image to route requests to each project. The base file creates this image without any SSL/CSP security 
-for testing with an override file available for production. The production override file creates the ingress proxy image with the 
-SSL certificates and CSP settings included (see Note on security below).
+an additional ingress proxy image to route requests to each project. The base file creates this image without any SSL security and 
+without the *upgrade-insecure-requests* CSP setting to make testing the full environment easier. An override file available is then
+available for a production environment which creates the ingress proxy image with the SSL certificates included (see Note on 
+security below) and also upgrades the CSP settings.
 
 You can see how the override file will be applied using:
 
     docker-compose -f docker-compose.yml -f docker-compose-production.yml config
+
+To run the test environment just use:
+
+    docker-compose up -d
+
+For the production environment use:
+
+    docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
 
 ### Golden Images
 
@@ -62,6 +71,7 @@ Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-arch image
 
 ### Future goals:
 
+- use buildx for multi-architecture.
 - push images to my own registry.
 - deployment to a docker swarm across several Raspberry Pi's.
 - full image tagging including major, minor, patch and latest.
