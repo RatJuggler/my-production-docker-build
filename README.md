@@ -26,7 +26,7 @@ I've started to define golden images for re-use and as best practice.
 
 #### golden-nginx
 
-This includes my production Nginx configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/production).
+This includes my mock production configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/my-production).
 
 I needed to make this a multi-architecture image so that I can use it on the Pi farm. The build uses `git` to clone the Nginx 
 configuration files, so I looked at using [alpine/git](https://hub.docker.com/r/alpine/git) but that doesn't have strong support 
@@ -67,6 +67,7 @@ Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-arch image
 - full image tagging including major, minor, patch and latest.
 - add Portainer as a management dashboard.
 - add monitoring and health checks.
+- test reporting of CSP issues and other errors.
 
 ### Note on security
 
