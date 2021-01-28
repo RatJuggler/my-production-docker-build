@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
 
   ingress-proxy:
-    image: ingress-proxy-test:${BUILD_TAG:-local}
+    image: ingress-proxy-test:local
     build:
       context: .
       dockerfile: Test.dockerfile

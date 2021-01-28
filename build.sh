@@ -40,6 +40,8 @@ cd src/developer-portfolio || exit
 docker-compose -f docker-compose.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
 cd ../..
 
+# Build for the ingress proxy.
+
 docker-compose -f docker-compose.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
 docker-compose -f docker-compose-production.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
 
