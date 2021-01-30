@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   portfolio-application:
-    image: ${dockerId:-johnchase}/portfolio-application:${BUILD_TAG:-latest}
+    image: ${dockerId:-johnchase}/portfolio-template:${BUILD_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
