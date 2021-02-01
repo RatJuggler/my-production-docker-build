@@ -1,8 +1,16 @@
 version: '3.8'
 
 services:
-  portfolio-application:
+  portfolio-spring:
+    image: ${dockerId:-johnchase}/portfolio-spring:${BUILD_TAG:-latest}
+    networks:
+      - portfolio
+    restart: unless-stopped
+
+  portfolio-template:
     image: ${dockerId:-johnchase}/portfolio-template:${BUILD_TAG:-latest}
+    depends_on:
+      - portfolio-spring
     networks:
       - portfolio
     restart: unless-stopped
@@ -16,7 +24,7 @@ services:
   portfolio-site:
     image: ${dockerId:-johnchase}/portfolio-site:${BUILD_TAG:-latest}
     depends_on:
-      - portfolio-application
+      - portfolio-template
       - portfolio-static
     networks:
       - portfolio
