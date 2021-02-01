@@ -69,15 +69,20 @@ pushed a manifest:
 
 Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-arch image.
 
-### Future goals:
+### Future ideas:
 
-- use buildx for multi-architecture.
-- push images to my own registry.
-- deployment to a docker swarm across several Raspberry Pi's.
-- full image tagging including major, minor, patch and latest.
-- add Portainer as a management dashboard.
-- add monitoring and health checks.
-- test reporting of CSP issues and other errors.
+In no particular order:
+
+- Use buildx for multi-architecture.
+- Push images to my own registry.
+- Deployment to a docker swarm across several Raspberry Pi's.
+- Better image tagging.
+- Add Portainer as a management dashboard.
+- Add monitoring and health checks.
+- Test reporting of CSP issues and other errors.
+- Use Kubernetes.
+- Use Ansible.
+- Mirror on AWS/GCP/Azure.
 
 ### Note on security
 
