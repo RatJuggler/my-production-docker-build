@@ -7,7 +7,7 @@ RUN apk --no-cache add git
 WORKDIR /src
 
 # Clone the production bracnch of the Nginx configuration files repo.
-RUN git clone --single-branch --depth 1 --branch my-production https://github.com/RatJuggler/server-configs-nginx.git .
+RUN git clone --single-branch --no-tags --depth 1 --branch my-production https://github.com/RatJuggler/server-configs-nginx.git .
 
 
 # Create the Nginx web server golden image and include the configuration files.
