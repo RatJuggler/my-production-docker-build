@@ -43,8 +43,9 @@ For the production environment use:
 A key part of making this all work on Raspberry Pi's is picking multi-architecture images base images which have good 32-bit ARM 
 (arm32v7, armv7, armhf) support, so that I can try to keep the docker files for each project as simple as possible.
 
-I am using images based on [alpine](https://hub.docker.com/_/alpine) 3.11 for stability and consistency, and to avoid [issues](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)
-with an out-of-date *libseccomp2* on Raspberry Pi OS:
+I am using images based on [alpine](https://hub.docker.com/_/alpine) 3.11 for stability and consistency, and I was trying to avoid 
+[issues](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements) with an out-of-date *libseccomp2* 
+on the Raspberry Pi OS (32-bit/Raspbian/Buster) that I'm running:
 
 - [alpine:3.11](https://hub.docker.com/layers/alpine/library/alpine/3.11/images/sha256-379fd3ade18c4ff1e12eeae9fafd3378fa039eb023ed534311c246d2d63f8c84)
 - [nginx:stable-alpine](https://hub.docker.com/layers/nginx/library/nginx/stable-alpine/images/sha256-da3716611fb965f3fda1f3281882baeb2760ca8bb7317f1d22ed45e75570827b)
@@ -52,30 +53,39 @@ with an out-of-date *libseccomp2* on Raspberry Pi OS:
 - [python:3.7-alpine3.11](https://hub.docker.com/layers/python/library/python/3.7-alpine3.11/images/sha256-1724b17cbf37548616325811484dd5a60351ab06bca4c5367b5c297c5e193e01)
 
 For Java, I want to use version 11 and [AdoptOpenJDK](https://hub.docker.com/_/adoptopenjdk) has better support for 32-bit ARM than 
-[OpenJDK](https://hub.docker.com/_/openjdk).
+[OpenJDK](https://hub.docker.com/_/openjdk). However, the latest official [Maven image](https://hub.docker.com/_/maven) for 
+AdoptOpenJDK is [based on](https://github.com/carlossg/docker-maven/blob/master/adoptopenjdk-11/Dockerfile) 
+`adoptopenjdk:11-jdk-hotspot` which in turn uses Ubuntu 20.04 (Focal Fossa) and has the same issue with *libseccomp2* when run on 
+Raspberry Pi OS as mentioned earlier. Researching the issue further the simplest solution looks to be to just install an updated
+backport of *libseccomp2* using the following commands:
+
+    wget http://ftp.uk.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.4.4-1~bpo10+1_armhf.deb
+    sudo dpkg -i libseccomp2_2.4.4-1~bpo10+1_armhf.deb
+
+I would rather use these standard images than have to find or build a custom image, so I will be testing this solution. 
 
 ### Golden Images
 
-I've started to define golden images for re-use and as best practice.
+I have started to define golden images for re-use and as best practice.
 
 #### golden-nginx
 
-This includes my mock production configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/my-production).
+This image includes my mock production configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/my-production).
 
-To build the images I ran the following on an intel linux machine:
+To build a multi-architecture image I first ran the following on an intel linux machine:
 
     docker image build -t johnchase/golden-nginx:linux-amd64 -f docker/nginx/Golden.dockerfile .
 
     docker image push johnchase/golden-nginx:linux-amd64
 
-And the following on a Raspberry Pi:
+And then the following on a Raspberry Pi:
 
     docker image build -t johnchase/golden-nginx:linux-arm -f docker/nginx/Golden.dockerfile .
 
     docker image push johnchase/golden-nginx:linux-arm
 
-Then to make a multi-arch image show up on docker hub I first pulled the ARM image down to the intel machine and then created and 
-pushed a manifest:
+Then to make the multi-architecture image show up on docker hub I first pulled the ARM image down to the intel machine and then 
+created and pushed a manifest:
 
     docker image pull johnchase/golden-nginx:linux-arm
 
@@ -83,7 +93,7 @@ pushed a manifest:
 
     docker manifest push johnchase/golden-nginx
 
-Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-arch image.
+Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-architecture image.
 
 ### Future ideas:
 
@@ -96,6 +106,7 @@ In no particular order:
 - Better image tagging.
 - Add Portainer as a management dashboard.
 - Add monitoring and health checks.
+- Build images on GitHub actions.
 - Test reporting of CSP issues and other errors.
 - Use Kubernetes.
 - Use Ansible.
