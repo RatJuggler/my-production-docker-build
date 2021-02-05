@@ -3,7 +3,16 @@
 This is still a work in progress and is my attempt at a unified build/deployment process for the various projects I'm running on my 
 Raspberry Pi farm.
 
-At the moment I have a build script which can be run to create all the images required: 
+The projects include:
+
+- [developer-portfolio](https://github.com/RatJuggler/developer-portfolio)
+- [guinea-bot](https://github.com/RatJuggler/guinea-bot)
+- [dinosauria-bot](https://github.com/RatJuggler/dinosauria-bot)
+- [sync-gandi-dns](https://github.com/RatJuggler/sync-gandi-dns)
+- [f4side-site](https://github.com/RatJuggler/f4rside-site)
+
+Each of the projects has had a docker build added to it, and I am using a build script to test how the images might be created 
+before looking at the CI/CD process proper: 
 
     ./build.sh
 
@@ -29,6 +38,22 @@ For the production environment use:
 
     docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
 
+### ARM Images
+
+A key part of making this all work on Raspberry Pi's is picking multi-architecture images base images which have good 32-bit ARM 
+(arm32v7, armv7, armhf) support, so that I can try to keep the docker files for each project as simple as possible.
+
+I am using images based on [alpine](https://hub.docker.com/_/alpine) 3.11 for stability and consistency, and to avoid [issues](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)
+with an out-of-date *libseccomp2* on Raspberry Pi OS:
+
+- [alpine:3.11](https://hub.docker.com/layers/alpine/library/alpine/3.11/images/sha256-379fd3ade18c4ff1e12eeae9fafd3378fa039eb023ed534311c246d2d63f8c84)
+- [nginx:stable-alpine](https://hub.docker.com/layers/nginx/library/nginx/stable-alpine/images/sha256-da3716611fb965f3fda1f3281882baeb2760ca8bb7317f1d22ed45e75570827b)
+- [node:lts-alpine3.11](https://hub.docker.com/layers/node/library/node/lts-alpine3.11/images/sha256-7c2d9dda61b89fd414371c14d6b87973925c66ebd4ca59f3a539821e88cdeb8f)
+- [python:3.7-alpine3.11](https://hub.docker.com/layers/python/library/python/3.7-alpine3.11/images/sha256-1724b17cbf37548616325811484dd5a60351ab06bca4c5367b5c297c5e193e01)
+
+For Java, I want to use version 11 and [AdoptOpenJDK](https://hub.docker.com/_/adoptopenjdk) has better support for 32-bit ARM than 
+[OpenJDK](https://hub.docker.com/_/openjdk).
+
 ### Golden Images
 
 I've started to define golden images for re-use and as best practice.
@@ -36,15 +61,6 @@ I've started to define golden images for re-use and as best practice.
 #### golden-nginx
 
 This includes my mock production configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/my-production).
-
-I needed to make this a multi-architecture image so that I can use it on the Pi farm. The build uses `git` to clone the Nginx 
-configuration files, so I looked at using [alpine/git](https://hub.docker.com/r/alpine/git) but that doesn't have strong support 
-for 32-bit ARM (arm32v7, armv7, armhf) so I've used a base [alpine](https://hub.docker.com/_/alpine) 3.11 image and then installed 
-`git` on top of that (a future caveat to be aware of is that there is an [issue](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements) 
-with an out-of-date *libseccomp* on Raspberry Pi OS when trying to use the latest *alpine* 3.13).
-
-For the final [Nginx](https://hub.docker.com/_/nginx) image I'm using the *stable-alpine* version which is [based on](https://github.com/nginxinc/docker-nginx/blob/master/stable/alpine/Dockerfile)
-*alpine* 3.11.
 
 To build the images I ran the following on an intel linux machine:
 
@@ -74,6 +90,7 @@ Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-arch image
 In no particular order:
 
 - Use buildx for multi-architecture.
+- Build a CI/CD pipeline.
 - Push images to my own registry.
 - Deployment to a docker swarm across several Raspberry Pi's.
 - Better image tagging.
