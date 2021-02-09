@@ -21,10 +21,10 @@ create the images for that project. Environment variables must be exported for u
 into the build files via the build-arg option.
 
 Everything is then tied together in this project with a base docker-compose file to orchestrate the images. This file also includes 
-an additional ingress proxy image to route requests to each project. The base file creates this image without any SSL security and 
-without the *upgrade-insecure-requests* CSP setting to make testing the full environment easier. An override file available is then
-available for a production environment which creates the ingress proxy image with the SSL certificates included (see Note on 
-security below) and also upgrades the CSP settings.
+an additional ingress proxy image to route requests to projects that serve content on request (websites basically). The base file 
+creates this image without any SSL security and without the *upgrade-insecure-requests* CSP setting to make testing the full 
+environment easier. An override file available is then used for the live environment which creates the ingress proxy image with 
+the SSL certificates included (see Note on security below) and also upgrades the CSP settings.
 
 You can see how the override file will be applied using:
 
@@ -40,7 +40,7 @@ For the production environment use:
 
 ### ARM Images
 
-A key part of making this all work on Raspberry Pi's is picking multi-architecture images base images which have good 32-bit ARM 
+A key part of making this all work on Raspberry Pi's is picking multi-architecture base images which have good 32-bit ARM 
 (arm32v7, armv7, armhf) support, so that I can try to keep the docker files for each project as simple as possible.
 
 I am using images based on [alpine](https://hub.docker.com/_/alpine) 3.11 for stability and consistency, and I was trying to avoid 
@@ -62,7 +62,7 @@ backport of *libseccomp2* using the following commands:
     wget http://ftp.uk.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.4.4-1~bpo10+1_armhf.deb
     sudo dpkg -i libseccomp2_2.4.4-1~bpo10+1_armhf.deb
 
-I would rather use these standard images than have to find or build a custom image, so I will be testing this solution. 
+I would rather use these standard images than have to find or build a custom image, so I will be using this solution. 
 
 ### Golden Images
 
@@ -95,6 +95,12 @@ created and pushed a manifest:
 
 Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-architecture image.
 
+### Deployed Result
+
+When everything is built and deployed the result should look something like this (ignoring replicas):
+
+![Image of Architecture](https://github.com/RatJuggler/my-production-docker-build/blob/main/deployed-result.jpg)
+
 ### Future ideas:
 
 In no particular order:
@@ -105,11 +111,13 @@ In no particular order:
 - Deployment to a docker swarm across several Raspberry Pi's.
 - Better image tagging.
 - Add Portainer as a management dashboard.
+- Implement Anchore analysis and scanning.
 - Add monitoring and health checks.
 - Build images on GitHub actions.
 - Test reporting of CSP issues and other errors.
+- Use Traefik instead of Nginx.
 - Use Kubernetes.
-- Use Ansible.
+- Configure using Ansible.
 - Mirror on AWS/GCP/Azure.
 
 ### Note on security
