@@ -1,8 +1,14 @@
 version: '3.8'
 
 services:
-  portfolio-spring:
-    image: ${dockerId:-johnchase}/portfolio-spring:${BUILD_TAG:-latest}
+  portfolio-simple:
+    image: ${dockerId:-johnchase}/portfolio-simple:${BUILD_TAG:-latest}
+    networks:
+      - portfolio
+    restart: unless-stopped
+
+  portfolio-sql:
+    image: ${dockerId:-johnchase}/portfolio-sql:${BUILD_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
@@ -10,7 +16,8 @@ services:
   portfolio-template:
     image: ${dockerId:-johnchase}/portfolio-template:${BUILD_TAG:-latest}
     depends_on:
-      - portfolio-spring
+      - portfolio-simple
+      - portfolio-sql
     networks:
       - portfolio
     restart: unless-stopped
