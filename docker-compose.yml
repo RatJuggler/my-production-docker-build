@@ -2,19 +2,19 @@ version: '3.8'
 
 services:
   portfolio-simple:
-    image: ${dockerId:-johnchase}/portfolio-simple:${BUILD_TAG:-latest}
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-simple:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
 
   portfolio-sql:
-    image: ${dockerId:-johnchase}/portfolio-sql:${BUILD_TAG:-latest}
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-sql:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
 
   portfolio-template:
-    image: ${dockerId:-johnchase}/portfolio-template:${BUILD_TAG:-latest}
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-template:${IMAGE_TAG:-latest}
     depends_on:
       - portfolio-simple
       - portfolio-sql
@@ -23,13 +23,13 @@ services:
     restart: unless-stopped
 
   portfolio-static:
-    image: ${dockerId:-johnchase}/portfolio-static:${BUILD_TAG:-latest}
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-static:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
 
   portfolio-site:
-    image: ${dockerId:-johnchase}/portfolio-site:${BUILD_TAG:-latest}
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-site:${IMAGE_TAG:-latest}
     depends_on:
       - portfolio-template
       - portfolio-static
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
 
   f4rside-site:
-    image: ${dockerId:-johnchase}/f4rside-site:${BUILD_TAG:-latest}
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}/f4rside-site:${IMAGE_TAG:-latest}
     networks:
       - external-sites
     restart: unless-stopped
