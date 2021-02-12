@@ -1,23 +1,26 @@
 version: '3.8'
 
 services:
-#  sync-gandi-dns:
-#    image: ${DOCKER_REGISTRY}${DOCKER_ID}sync-gandi-dns:${IMAGE_TAG:-latest}
-#    env_file:
-#      - sync-gandi-dns.env
-#    restart: unless-stopped
+  sync-gandi-dns:
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}sync-gandi-dns:${IMAGE_TAG:-latest}
+    env_file:
+      - sync-gandi-dns.env
+    restart: unless-stopped
+    profiles: ["disabled"]
 
-#  guinea-bot:
-#    image: ${DOCKER_REGISTRY}${DOCKER_ID}/guinea-bot:${IMAGE_TAG:-latest}
-#    env_file:
-#      - guinea-bot.env
-#    restart: unless-stopped
+  guinea-bot:
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}/guinea-bot:${IMAGE_TAG:-latest}
+    env_file:
+      - guinea-bot.env
+    restart: unless-stopped
+    profiles: ["disabled"]
 
-#  dinosauria-bot:
-#    image: ${DOCKER_REGISTRY}${DOCKER_ID}dinosauria-bot:${IMAGE_TAG:-latest}
-#    env_file:
-#      - dinosauria-bot.env
-#    restart: unless-stopped
+  dinosauria-bot:
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}dinosauria-bot:${IMAGE_TAG:-latest}
+    env_file:
+      - dinosauria-bot.env
+    restart: unless-stopped
+    profiles: ["disabled"]
 
   f4rside-site:
     image: ${DOCKER_REGISTRY}${DOCKER_ID}/f4rside-site:${IMAGE_TAG:-latest}
