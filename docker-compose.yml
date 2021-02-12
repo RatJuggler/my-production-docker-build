@@ -1,6 +1,30 @@
 version: '3.8'
 
 services:
+#  sync-gandi-dns:
+#    image: ${DOCKER_REGISTRY}${DOCKER_ID}sync-gandi-dns:${IMAGE_TAG:-latest}
+#    env_file:
+#      - sync-gandi-dns.env
+#    restart: unless-stopped
+
+#  guinea-bot:
+#    image: ${DOCKER_REGISTRY}${DOCKER_ID}/guinea-bot:${IMAGE_TAG:-latest}
+#    env_file:
+#      - guinea-bot.env
+#    restart: unless-stopped
+
+#  dinosauria-bot:
+#    image: ${DOCKER_REGISTRY}${DOCKER_ID}dinosauria-bot:${IMAGE_TAG:-latest}
+#    env_file:
+#      - dinosauria-bot.env
+#    restart: unless-stopped
+
+  f4rside-site:
+    image: ${DOCKER_REGISTRY}${DOCKER_ID}/f4rside-site:${IMAGE_TAG:-latest}
+    networks:
+      - external-sites
+    restart: unless-stopped
+
   portfolio-simple:
     image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-simple:${IMAGE_TAG:-latest}
     networks:
@@ -35,12 +59,6 @@ services:
       - portfolio-static
     networks:
       - portfolio
-      - external-sites
-    restart: unless-stopped
-
-  f4rside-site:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}/f4rside-site:${IMAGE_TAG:-latest}
-    networks:
       - external-sites
     restart: unless-stopped
 
