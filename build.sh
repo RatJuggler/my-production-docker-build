@@ -9,7 +9,10 @@ function checkout_and_build() {
   # env_file entries must exist for the compose file to be validated so we create a dummy one for building.
   touch $REPO.env
   # Do the build.
-  docker-compose -f docker-compose.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
+  docker-compose -f docker-compose.yml --profile="builders" build \
+    --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" \
+    --build-arg DOCKER_ID="$DOCKER_ID" \
+    --build-arg BUILD_TAG="$BUILD_TAG"
   # Only do a push if a registry and an id have been set.
   if [[ -n "$DOCKER_REGISTRY" && -n "$DOCKER_ID" ]]; then
     docker-compose -f docker-compose.yml push
@@ -57,7 +60,13 @@ checkout_and_build developer-portfolio
 # Build for the ingress proxy.
 # IMPORTANT: We must *NOT* push the ingress proxy image to a public repository whilst it contains our certificate keys!
 
-docker-compose -f docker-compose.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
-docker-compose -f docker-compose-production.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
+docker-compose -f docker-compose.yml build \
+    --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" \
+    --build-arg DOCKER_ID="$DOCKER_ID" \
+    --build-arg BUILD_TAG="$BUILD_TAG"
+docker-compose -f docker-compose-production.yml build \
+    --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" \
+    --build-arg DOCKER_ID="$DOCKER_ID" \
+    --build-arg BUILD_TAG="$BUILD_TAG"
 
 printf "\nAll Done!\n"
