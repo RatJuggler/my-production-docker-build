@@ -16,6 +16,8 @@ function checkout_and_build() {
   fi
   # Restore previous CWD.
   cd ../.. || exit
+  # Make sure we have an env_file here for the local compose file.
+  touch $REPO.env
 }
 
 printf "My Production Docker Builder\n"
