@@ -24,6 +24,33 @@ printf "\nClearing down any previous builds...\n"
 rm -rf src
 mkdir src
 
+# Build for sync-gandi-dns site.
+
+git clone --single-branch --no-tags --depth 1 https://github.com/RatJuggler/sync-gandi-dns.git src/sync-gandi-dns
+
+cd src/sync-gandi-dns || exit
+docker-compose -f docker-compose.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
+docker-compose -f docker-compose.yml push
+cd ../.. || exit
+
+# Build for guinea-bot site.
+
+git clone --single-branch --no-tags --depth 1 https://github.com/RatJuggler/guinea-bot.git src/guinea-bot
+
+cd src/guinea-bot || exit
+docker-compose -f docker-compose.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
+docker-compose -f docker-compose.yml push
+cd ../.. || exit
+
+# Build for dinosauria-bot site.
+
+git clone --single-branch --no-tags --depth 1 https://github.com/RatJuggler/dinosauria-bot.git src/dinosauria-bot
+
+cd src/dinosauria-bot || exit
+docker-compose -f docker-compose.yml build --pull --build-arg BUILD_TAG="$BUILD_TAG"
+docker-compose -f docker-compose.yml push
+cd ../.. || exit
+
 # Build for f4rside.com site.
 
 git clone --single-branch --no-tags --depth 1 https://github.com/RatJuggler/f4rside-site.git src/f4rside-site
