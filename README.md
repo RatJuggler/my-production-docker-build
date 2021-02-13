@@ -14,19 +14,33 @@ The projects include:
 Each of the projects has had a docker build added to it, and I am using a build script to test how the images might be created 
 before looking at the CI/CD process proper: 
 
-    ./build.sh
+    $ ./build.sh -h
+    My Docker Image Builder
+    
+    Usage: build [-h] [-i DOCKER_ID] [-m] [-r DOCKER_REGISTRY] [-t IMAGE_TAG]
+    
+    Options:
+      -h                  display this help and exit
+      -i DOCKER_ID        set the docker id (repository) to use
+      -m                  set the image tag according to the local architecture,
+                            overrides '-t'
+      -r DOCKER_REGISTRY  set the docker registry to use,
+                            does NOT default to 'docker.io'
+      -t IMAGE_TAG        set the image tag to use, defaults to 'latest',
+                            overridden by '-m'
 
 The script clones only the minimum source code required (no history) for each project and then uses the projects compose file to 
 create the images for that project. Options are available to set the registry, docker id (repository) and tag for the generated 
-images. If a registry and repository are set the script will attempt to push the images to that repository. It will not default
-the registry to Docker Hub you have to explicitly set it:
+images, with an additional multi-architecture option to set the image tag according to the local architecture. If a registry and 
+repository are set the script will attempt to push the images to that registry. It will not default the registry to Docker Hub, 
+you have to explicitly set it:
 
     ./build.sh -r docker.io -i johnchase
 
 Note: Environment variables must be exported for use in the compose file but can be injected directly into the build files via the 
 build-arg option.
 
-After the images are built everything is then tied together in this project, with a docker-compose file to orchestrate the 
+After the images are built, everything is then tied together in this project with a docker-compose file to orchestrate the 
 containers. This file also includes an additional ingress proxy image to route requests to project's that serve content on request 
 (websites basically). The base file creates this image without any SSL security and without the *upgrade-insecure-requests* CSP 
 setting to make testing the full environment easier. An override file is then available for the live environment which creates the 
@@ -80,13 +94,13 @@ This image includes my mock production configuration files from [Nginx HTTP serv
 
 To build a multi-architecture image I first ran the following on an intel linux machine:
 
-    docker image build -t johnchase/golden-nginx:linux-amd64 -f docker/nginx/Golden.dockerfile .
+    docker image build -f docker/nginx/Golden.dockerfile -t johnchase/golden-nginx:linux-amd64 .
 
     docker image push johnchase/golden-nginx:linux-amd64
 
 And then the following on a Raspberry Pi:
 
-    docker image build -t johnchase/golden-nginx:linux-arm -f docker/nginx/Golden.dockerfile .
+    docker image build -f docker/nginx/Golden.dockerfile -t johnchase/golden-nginx:linux-arm .
 
     docker image push johnchase/golden-nginx:linux-arm
 
@@ -95,15 +109,18 @@ created and pushed a manifest:
 
     docker image pull johnchase/golden-nginx:linux-arm
 
-    docker manifest create johnchase/golden-nginx johnchase/golden-nginx:linux-amd64 johnchase/golden-nginx:linux-arm
+    docker manifest create johnchase/golden-nginx:latest johnchase/golden-nginx:linux-amd64 johnchase/golden-nginx:linux-arm
 
-    docker manifest push johnchase/golden-nginx
+    docker manifest push --purge johnchase/golden-nginx:latest
 
-Docker hub now shows *johnchase/golden-nginx:latest* as being a multi-architecture image.
+The `--purge` parameter removes the local version of the manifest after pushing. When the images are updated the manifest can then 
+be updated by recreating and re-pushing it.
+
+Looking in Docker hub it then shows *johnchase/golden-nginx:latest* as being a multi-architecture image.
 
 ### Deployed Result
 
-When everything is built and deployed the result should look something like this (ignoring replicas):
+When everything is built and deployed the result should look something like this (ignoring any replicas):
 
 ![Image of Architecture](https://github.com/RatJuggler/my-production-docker-build/blob/main/deployed-result.jpg)
 
