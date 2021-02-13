@@ -51,21 +51,21 @@ if [[ -n "$DOCKER_REGISTRY" && -z "$DOCKER_ID" ]]; then
 fi
 
 if [[ -z "$DOCKER_REGISTRY" ]]; then
-  printf -v REGISTRY_USED "<Not set, local image only>"
+  printf -v REGISTRY_USED "Not set, local image only"
 else
-  printf -v REGISTRY_USED "%s" "$DOCKER_REGISTRY"
+  printf -v REGISTRY_USED "Images will be pushed to registry '%s'" "$DOCKER_REGISTRY"
 fi
 
 if [[ -z "$DOCKER_ID" ]]; then
-  printf -v ID_USED "<Not set, local image only>"
+  printf -v ID_USED "Not set, local image only"
 else
-  printf -v ID_USED "%s" "$DOCKER_ID"
+  printf -v ID_USED "Images will be tagged with repository '%s'" "$DOCKER_ID"
 fi
 
 if [[ -z "$IMAGE_TAG" ]]; then
-  printf -v TAG_USED "<Not set, will default to 'latest'>"
+  printf -v TAG_USED "Not set, default image tag will be used"
 else
-  printf -v TAG_USED "%s" "$IMAGE_TAG"
+  printf -v TAG_USED "Images will be tagged with '%s'" "$IMAGE_TAG"
 fi
 
 printf "Docker Registry         : %s\n" "$REGISTRY_USED"
