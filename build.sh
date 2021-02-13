@@ -1,12 +1,12 @@
 #!/bin/bash
 
 function show_usage() {
-   printf "My Docker Builder\n\n"
+   printf "My Docker Image Builder\n\n"
    printf "Usage: build [-h] [-i DOCKER_ID] [-m] [-r DOCKER_REGISTRY] [-t IMAGE_TAG]\n\n"
    printf "Options:\n"
    printf "  -h                  display this help and exit\n"
    printf "  -i DOCKER_ID        set the docker id (repository) to use\n"
-   printf "  -m                  set the image tag according to the architecture,\n"
+   printf "  -m                  set the image tag according to the local architecture,\n"
    printf "                        overrides '-t'\n"
    printf "  -r DOCKER_REGISTRY  set the docker registry to use,\n"
    printf "                        does NOT default to 'docker.io'\n"
@@ -51,13 +51,13 @@ do
       exit 0
       ;;
     i)
-      export DOCKER_ID=${OPTARG}
+      export DOCKER_ID=${OPTARG}/
       ;;
     m)
       MULTI_ARCH=true
       ;;
     r)
-      export DOCKER_REGISTRY=${OPTARG}
+      export DOCKER_REGISTRY=${OPTARG}/
       ;;
     t)
       export IMAGE_TAG=${OPTARG}
@@ -71,12 +71,12 @@ do
 done
 
 if [[ -n "$MULTI_ARCH" && -n "$IMAGE_TAG" ]]; then
-  printf "\nError: Image tag cannot be set when multi-architecture option selected!\n"
+  printf "build: image tag cannot be set when multi-architecture option selected!\n"
   exit 1
 fi
 
 if [[ -n "$DOCKER_REGISTRY" && -z "$DOCKER_ID" ]]; then
-  printf "\nError: Docker Id (repository) must also be set when specifying a registry!\n"
+  printf "build: docker Id (repository) must also be set when specifying a registry!\n"
   exit 1
 fi
 
