@@ -17,14 +17,20 @@ before looking at the CI/CD process proper:
     ./build.sh
 
 The script clones only the minimum source code required (no history) for each project and then uses the projects compose file to 
-create the images for that project. Environment variables must be exported for use in the compose file but can be injected directly
-into the build files via the build-arg option.
+create the images for that project. Options are available to set the registry, docker id (repository) and tag for the generated 
+images. If a registry and repository are set the script will attempt to push the images to that repository. It will not default
+the registry to Docker Hub you have to explicitly set it:
 
-Everything is then tied together in this project with a base docker-compose file to orchestrate the images. This file also includes 
-an additional ingress proxy image to route requests to projects that serve content on request (websites basically). The base file 
-creates this image without any SSL security and without the *upgrade-insecure-requests* CSP setting to make testing the full 
-environment easier. An override file available is then used for the live environment which creates the ingress proxy image with 
-the SSL certificates included (see Note on security below) and also upgrades the CSP settings.
+    ./build.sh -r docker.io -i johnchase
+
+Note: Environment variables must be exported for use in the compose file but can be injected directly into the build files via the 
+build-arg option.
+
+After the images are built everything is then tied together in this project, with a docker-compose file to orchestrate the 
+containers. This file also includes an additional ingress proxy image to route requests to project's that serve content on request 
+(websites basically). The base file creates this image without any SSL security and without the *upgrade-insecure-requests* CSP 
+setting to make testing the full environment easier. An override file is then available for the live environment which creates the 
+ingress proxy image with the SSL certificates included (see Note on security below) and also upgrades the CSP settings.
 
 You can see how the override file will be applied using:
 
@@ -113,7 +119,7 @@ In no particular order:
 - Add Portainer as a management dashboard.
 - Implement Anchore analysis and scanning.
 - Add monitoring and health checks.
-- Build images on GitHub actions.
+- Build images via Docker Hub or GitHub Actions.
 - Test reporting of CSP issues and other errors.
 - Use Traefik instead of Nginx.
 - Use Kubernetes.
