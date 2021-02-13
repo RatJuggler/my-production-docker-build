@@ -19,18 +19,38 @@ function checkout_and_build() {
   fi
   # Restore previous CWD.
   cd ../.. || exit
-  # Make sure we have an env_file here for the local compose file.
+  # Make sure we have an env_file here to allow the local compose file to validate.
   touch $REPO.env
 }
 
 printf "My Production Docker Builder\n"
 printf "============================\n\n"
 
-while getopts :i:r:t: OPTION
+ARCH=$(uname -m)
+case "$ARCH" in
+  x86_64)
+    export BUILD_TAG="linux-amd64"
+    ;;
+  armv7l)
+    export BUILD_TAG="linux-arm"
+    ;;
+  *)
+    printf "Unexpected architecture '%s' found!\n" "$ARCH"
+    exit 1
+    ;;
+esac
+
+printf "Architecture Identified : %s\n" "$ARCH"
+printf "Using Build Tag         : %s\n" "$BUILD_TAG"
+
+while getopts :i:mr:t: OPTION
 do
   case "${OPTION}" in
     i)
       export DOCKER_ID=${OPTARG}
+      ;;
+    m)
+      MULTI_ARCH=true
       ;;
     r)
       export DOCKER_REGISTRY=${OPTARG}
@@ -39,14 +59,23 @@ do
       export IMAGE_TAG=${OPTARG}
       ;;
     ?)
-      printf "Usage: %s -i DOCKER_ID -r DOCKER_REGISTRY -t IMAGE_TAG\n" "$0"
+      printf "\nUsage: %s -i DOCKER_ID -m -r DOCKER_REGISTRY -t IMAGE_TAG\n" "$0"
       exit 1
       ;;
   esac
 done
 
+if [[ -n "$MULTI_ARCH" ]]; then
+  if [[ -z "$IMAGE_TAG" ]]; then
+    export IMAGE_TAG=$BUILD_TAG
+  else
+    printf "\nError: Image tag cannot be set when multi-architecture option selected!\n"
+    exit 1
+  fi
+fi
+
 if [[ -n "$DOCKER_REGISTRY" && -z "$DOCKER_ID" ]]; then
-  printf "Error: Docker Id must also be set when specifying a registry!\n"
+  printf "\nError: Docker Id (repository) must also be set when specifying a registry!\n"
   exit 1
 fi
 
@@ -62,7 +91,9 @@ else
   printf -v ID_USED "Images will be tagged with repository '%s'" "$DOCKER_ID"
 fi
 
-if [[ -z "$IMAGE_TAG" ]]; then
+if [[ -n "$MULTI_ARCH" ]]; then
+  printf -v TAG_USED "Multi-architecture selected, images will be tagged with '%s'" "$IMAGE_TAG"
+elif [[ -z "$IMAGE_TAG" ]]; then
   printf -v TAG_USED "Not set, default image tag will be used"
 else
   printf -v TAG_USED "Images will be tagged with '%s'" "$IMAGE_TAG"
@@ -71,23 +102,6 @@ fi
 printf "Docker Registry         : %s\n" "$REGISTRY_USED"
 printf "Docker Id               : %s\n" "$ID_USED"
 printf "Image Tag               : %s\n" "$TAG_USED"
-
-ARCH=$(uname -m)
-case "$ARCH" in
-  x86_64)
-    export BUILD_TAG="local"
-    ;;
-  armv7l)
-    export BUILD_TAG="local"
-    ;;
-  *)
-    printf "Unexpected architecture '%s' found!\n" "$ARCH"
-    exit 1
-    ;;
-esac
-
-printf "Architecture Identified : %s\n" "$ARCH"
-printf "Using Build Tag         : %s\n" "$BUILD_TAG"
 
 printf "\nClearing down any previous builds...\n"
 rm -rf src
