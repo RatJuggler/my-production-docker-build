@@ -26,9 +26,28 @@ function checkout_and_build() {
 printf "My Production Docker Builder\n"
 printf "============================\n\n"
 
-export DOCKER_REGISTRY=""
-export DOCKER_ID=""
-export IMAGE_TAG="latest"
+while getopts :i:r:t: OPTION
+do
+    case "${OPTION}" in
+        i)
+          export DOCKER_ID=${OPTARG}
+          ;;
+        r)
+          export DOCKER_REGISTRY=${OPTARG}
+          ;;
+        t)
+          export IMAGE_TAG=${OPTARG}
+          ;;
+        ?)
+          printf "Usage: %s -i DOCKER_ID -r DOCKER_REGISTRY -t IMAGE_TAG\n" "$0"
+          exit 1
+          ;;
+    esac
+done
+
+printf "Docker Registry         : %s\n" "$DOCKER_REGISTRY"
+printf "Docker Id               : %s\n" "$DOCKER_ID"
+printf "Image Tag               : %s\n" "$IMAGE_TAG"
 
 ARCH=$(uname -m)
 case "$ARCH" in
@@ -39,13 +58,13 @@ case "$ARCH" in
     export BUILD_TAG="local"
     ;;
   *)
-    printf "Unexpected architecture '%s' encountered!\n" "$ARCH"
+    printf "Unexpected architecture '%s' found!\n" "$ARCH"
     exit 1
     ;;
 esac
 
-printf "Identified architecture: %s\n" "$ARCH"
-printf "Using build tag:         %s\n" "$BUILD_TAG"
+printf "Architecture Identified : %s\n" "$ARCH"
+printf "Using Build Tag         : %s\n" "$BUILD_TAG"
 
 printf "\nClearing down any previous builds...\n"
 rm -rf src
