@@ -2,8 +2,8 @@
 .idea/
 
 # Make sure we don't commit any certificates or keys.
-nginx/certs/*
-!nginx/certs/README.md
+**/*.crt
+**/*.key
 
 # Make sure we don't commit any source files with this project.
 src/

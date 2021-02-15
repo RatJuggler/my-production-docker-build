@@ -11,6 +11,6 @@ services:
     image: ingress-proxy-test:local
     build:
       context: .
-      dockerfile: docker/ingress/test/Dockerfile
+      dockerfile: Dockerfile
       <<: *args
       target: ingress-proxy-test
