@@ -5,7 +5,7 @@
 ./bin/push-manifest.sh -g docker.io -p johnchase -i dinosauria-bot
 ./bin/push-manifest.sh -g docker.io -p johnchase -i f4rside-site
 
-./bin/push-manifest.sh -g docker.io -p johnchase -i builder-share-resources
+./bin/push-manifest.sh -g docker.io -p johnchase -i builder-shared-resources
 ./bin/push-manifest.sh -g docker.io -p johnchase -i builder-portfolio-simple
 ./bin/push-manifest.sh -g docker.io -p johnchase -i portfolio-simple
 ./bin/push-manifest.sh -g docker.io -p johnchase -i builder-portfolio-sql
