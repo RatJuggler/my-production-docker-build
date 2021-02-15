@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  dinosauria-bot:
+    image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/dinosauria-bot:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
+    secrets:
+      - source: dinosauria-bot-secrets-v1
+        target: /src/dinosauria-bot.env
+
+secrets:
+  dinosauria-bot-secrets-v1:
+    external: true

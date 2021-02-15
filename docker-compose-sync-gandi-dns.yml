@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  dinosauria-bot:
+    image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/sync-gandi-dns:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
+    secrets:
+      - source: sync-gandi-dns-secrets-v1
+        target: /src/sync-gandi-dns.env
+
+secrets:
+  sync-gandi-dns-secrets-v1:
+    external: true

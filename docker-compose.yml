@@ -1,20 +1,6 @@
 version: '3.8'
 
 services:
-  sync-gandi-dns:
-    image: ${REGISTRY}${REPOSITORY}sync-gandi-dns:${IMAGE_TAG:-latest}
-    env_file:
-      - sync-gandi-dns.env
-    restart: unless-stopped
-    profiles: ["disabled"]
-
-  dinosauria-bot:
-    image: ${REGISTRY}${REPOSITORY}dinosauria-bot:${IMAGE_TAG:-latest}
-    env_file:
-      - dinosauria-bot.env
-    restart: unless-stopped
-    profiles: ["disabled"]
-
   f4rside-site:
     image: ${REGISTRY}${REPOSITORY}f4rside-site:${IMAGE_TAG:-latest}
     networks:
