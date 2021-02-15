@@ -3,6 +3,8 @@ version: '3.8'
 services:
   guinea-bot:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}guinea-bot:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
     secrets:
       - source: guinea-bot-secrets-v1
         target: /src/guinea-bot.env
