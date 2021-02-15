@@ -1,11 +1,5 @@
 version: '3.8'
 
-x-args: &args
-  args:
-    DOCKER_REGISTRY: ${DOCKER_REGISTRY:-}
-    DOCKER_ID: ${DOCKER_ID:-}
-    BUILD_TAG: ${BUILD_TAG:-local}
-
 services:
   sync-gandi-dns:
     image: ${DOCKER_REGISTRY}${DOCKER_ID}sync-gandi-dns:${IMAGE_TAG:-latest}
@@ -73,11 +67,6 @@ services:
 
   ingress-proxy:
     image: ingress-proxy-test:local
-    build:
-      context: .
-      dockerfile: docker/ingress/test/Dockerfile
-      <<: *args
-      target: ingress-proxy-test
     ports:
       - "80:80"
     depends_on:

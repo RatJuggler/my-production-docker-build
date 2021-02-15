@@ -1,0 +1,16 @@
+version: '3.8'
+
+x-args: &args
+  args:
+    REGISTRY: ${REGISTRY:-}
+    REPOSITORY: ${REPOSITORY:-}
+    BUILD_TAG: ${BUILD_TAG:-local}
+
+services:
+  ingress-proxy:
+    image: ingress-proxy-production:local
+    build:
+      context: .
+      dockerfile: docker/ingress/production/Dockerfile
+      <<: *args
+      target: ingress-proxy-production
