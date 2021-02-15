@@ -75,7 +75,7 @@ services:
     image: ingress-proxy-test:local
     build:
       context: .
-      dockerfile: Test.dockerfile
+      dockerfile: docker/ingress/test/Dockerfile
       <<: *args
       target: ingress-proxy-test
     ports:

@@ -11,7 +11,7 @@ services:
     image: ingress-proxy-production:local
     build:
       context: .
-      dockerfile: Production.dockerfile
+      dockerfile: docker/ingress/production/Dockerfile
       <<: *args
       target: ingress-proxy-production
     ports:
