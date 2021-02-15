@@ -11,42 +11,60 @@ The projects include:
 - [sync-gandi-dns](https://github.com/RatJuggler/sync-gandi-dns)
 - [f4side-site](https://github.com/RatJuggler/f4rside-site)
 
-Each of the projects has had a docker build added to it, and I am using a build script to test how the images might be created 
-before looking at the CI/CD process proper: 
+Each of the projects has had a docker build added to it. I am using scripts to test how the multi-architecture images I need might 
+be created before looking at the CI/CD process proper. The scripts in the `/bin` are as follows:
 
-    $ ./build.sh -h
-    My Docker Image Builder
-    
-    Usage: build [-h] [-i DOCKER_ID] [-m] [-r DOCKER_REGISTRY] [-t IMAGE_TAG]
-    
-    Options:
-      -h                  display this help and exit
-      -i DOCKER_ID        set the docker id (repository) to use
-      -m                  set the image tag according to the local architecture,
-                            overrides '-t'
-      -r DOCKER_REGISTRY  set the docker registry to use,
-                            does NOT default to 'docker.io'
-      -t IMAGE_TAG        set the image tag to use, defaults to 'latest',
-                            overridden by '-m'
+- build.sh: generic script to build and push images for a given project. 
+- build-project-images.sh: convenience script to build all the projects I want.
+- push-manifest.sh; generic script to create a multi-architecture image from existing tagged images.
+- create-multi-arch-manifests.sh: convenience script to create all the multi-architecture images I want. 
+- build-ingress-proxy.sh: standalone build for the ingress proxy (see deployment).  
 
-The script clones only the minimum source code required (no history) for each project and then uses the projects compose file to 
-create the images for that project. Options are available to set the registry, docker id (repository) and tag for the generated 
+The build script clones only the minimum source code required (no history) for each project and then uses the projects compose file 
+to create the images for that project. Options are available to set the registry, docker id (repository) and tag for the generated 
 images, with an additional multi-architecture option to set the image tag according to the local architecture. If a registry and 
 repository are set the script will attempt to push the images to that registry. It will not default the registry to Docker Hub, 
 you have to explicitly set it:
+```
+My Project Docker Image Builder
 
-    ./build.sh -r docker.io -i johnchase
+Usage: build [-h] [-g GIT_REPO] [-m] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]
 
+Options:
+-h             display this help and exit
+-u GIT_URL     the URL of the git repo to run a build for, required
+-m             set the image tag according to the local architecture, overrides '-t'
+-g REGISTRY    set the docker registry to use, does NOT default to 'docker.io'
+-p REPOSITORY  set the docker repository (id) to use
+-t IMAGE_TAG   set the image tag to use, defaults to 'latest', overridden by '-m'
+```
 Note: Environment variables must be exported for use in the compose file but can be injected directly into the build files via the 
 build-arg option.
 
-After the images are built, everything is then tied together in this project with a docker-compose file to orchestrate the 
-containers. This file also includes an additional ingress proxy image to route requests to project's that serve content on request 
-(websites basically). The base file creates this image without any SSL security and without the *upgrade-insecure-requests* CSP 
-setting to make testing the full environment easier. An override file is then available for the live environment which creates the 
-ingress proxy image with the SSL certificates included (see Note on security below) and also upgrades the CSP settings.
+The manifest script expects images to have already been built for the two architectures I need (intel and arm) and then ties these 
+together into a multi-architecture image manifest and pushes that to the supplied registry.
+```
+My Docker Multi-Architecture Manifest Builder
 
-You can see how the override file will be applied using:
+'linux-amd' and 'linux-arm' images must have already been created and tagged.
+
+Usage: push-manifest [-h] [-i IMAGE_NAME] [-g REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]
+
+Options:
+-h             display this help and exit
+-i IMAGE_NAME  name of the image to make multi-architecture, required
+-g REGISTRY    set the docker registry to use, does NOT default to 'docker.io', required
+-p REPOSITORY  set the docker repository (id) to use, required
+-t IMAGE_TAG   set the manifest image tag to use, defaults to 'latest'
+```
+The proxy build convenience script builds an additional ingress proxy image to route requests to project's that serve content on 
+request (websites basically). There are two versions of the proxy, a test image without any SSL security and without the 
+*upgrade-insecure-requests* CSP setting to make testing the full environment easier, and a production environment version which 
+creates the ingress proxy image with the SSL certificates included (see Note on security below) and also upgrades the CSP settings.
+
+After the images are built, everything is then tied together in this project with a docker-compose file to orchestrate the 
+containers. This is configured with the test ingress proxy by default which can be overridden for production environments. You can 
+see how the override file will be applied using:
 
     docker-compose -f docker-compose.yml -f docker-compose-production.yml config
 
