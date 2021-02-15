@@ -4,10 +4,10 @@ services:
   guinea-bot:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}guinea-bot:${IMAGE_TAG:-latest}
     secrets:
-      - source: guinea-bot-secrets
+      - source: guinea-bot-secrets-v1
         target: /src/guinea-bot.env
     restart: unless-stopped
 
 secrets:
-  guinea-bot-secrets:
+  guinea-bot-secrets-v1:
     external: true
