@@ -27,7 +27,7 @@ function create_and_push() {
   pull_image 'linux-amd64'
   pull_image 'linux-arm'
   # Create the manifest.
-  docker manifest create "$IMAGE":latest "$IMAGE":linux-amd64 "$IMAGE":linux-arm
+  docker manifest create --amend "$IMAGE":latest "$IMAGE":linux-amd64 "$IMAGE":linux-arm
   # Only push it and clear down if a registry and a repository have been set.
   if [[ -n "$REGISTRY" && -n "$REPOSITORY" ]]; then
     docker manifest push --purge "$IMAGE":"$IMAGE_TAG"
