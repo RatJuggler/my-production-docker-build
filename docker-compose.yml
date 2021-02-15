@@ -2,65 +2,65 @@ version: '3.8'
 
 services:
   f4rside-site:
-    image: ${REGISTRY}${REPOSITORY}f4rside-site:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/f4rside-site:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
     networks:
       - external-sites
-    restart: unless-stopped
-    profiles: ["disabled"]
 
   portfolio-simple:
-    image: ${REGISTRY}${REPOSITORY}portfolio-simple:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-simple:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
     networks:
       - portfolio
-    restart: unless-stopped
-    profiles: ["disabled"]
 
   portfolio-sql:
-    image: ${REGISTRY}${REPOSITORY}portfolio-sql:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-sql:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
     networks:
       - portfolio
-    restart: unless-stopped
-    profiles: ["disabled"]
 
   portfolio-template:
-    image: ${REGISTRY}${REPOSITORY}portfolio-template:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-template:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
     depends_on:
       - portfolio-simple
       - portfolio-sql
     networks:
       - portfolio
-    restart: unless-stopped
-    profiles: ["disabled"]
 
   portfolio-static:
-    image: ${REGISTRY}${REPOSITORY}portfolio-static:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-static:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
     networks:
       - portfolio
-    restart: unless-stopped
-    profiles: ["disabled"]
 
   portfolio-site:
-    image: ${REGISTRY}${REPOSITORY}portfolio-site:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-site:${IMAGE_TAG:-latest}
+    deploy:
+      replicas: 1
     depends_on:
       - portfolio-template
       - portfolio-static
     networks:
       - portfolio
       - external-sites
-    restart: unless-stopped
-    profiles: ["disabled"]
 
   ingress-proxy:
     image: ingress-proxy-test:local
     ports:
       - "80:80"
+    deploy:
+      replicas: 1
     depends_on:
       - portfolio-site
       - f4rside-site
     networks:
       - external-sites
-    restart: unless-stopped
-    profiles: ["disabled"]
 
 networks:
   portfolio:
