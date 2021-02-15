@@ -2,14 +2,14 @@
 
 function show_usage() {
    printf "My Project Docker Image Builder\n\n"
-   printf "Usage: build [-h] [-g GIT_REPO] [-m] [-i DOCKER_ID] [-r DOCKER_REGISTRY] [-t IMAGE_TAG]\n\n"
+   printf "Usage: build [-h] [-g GIT_REPO] [-m] [-r DOCKER_REGISTRY] [-p DOCKER_REPOSITORY] [-t IMAGE_TAG]\n\n"
    printf "Options:\n"
-   printf "  -h                  display this help and exit\n"
-   printf "  -u GIT_URL          the URL of the git repo to run a build for, required\n"
-   printf "  -m                  set the image tag according to the local architecture, overrides '-t'\n"
-   printf "  -i DOCKER_ID        set the docker id (repository) to use\n"
-   printf "  -r DOCKER_REGISTRY  set the docker registry to use, does NOT default to 'docker.io'\n"
-   printf "  -t IMAGE_TAG        set the image tag to use, defaults to 'latest', overridden by '-m'\n"
+   printf "  -h                    display this help and exit\n"
+   printf "  -u GIT_URL            the URL of the git repo to run a build for, required\n"
+   printf "  -m                    set the image tag according to the local architecture, overrides '-t'\n"
+   printf "  -g DOCKER_REGISTRY    set the docker registry to use, does NOT default to 'docker.io'\n"
+   printf "  -p DOCKER_REPOSITORY  set the docker repository (id) to use\n"
+   printf "  -t IMAGE_TAG          set the image tag to use, defaults to 'latest', overridden by '-m'\n"
 }
 
 function checkout_and_build() {
@@ -24,10 +24,10 @@ function checkout_and_build() {
   # Do the build.
   docker-compose -f docker-compose.yml --profile="builders" build \
     --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" \
-    --build-arg DOCKER_ID="$DOCKER_ID" \
+    --build-arg DOCKER_ID="$DOCKER_REPOSITORY" \
     --build-arg BUILD_TAG="$BUILD_TAG"
-  # Only do a push if a registry and an id have been set.
-  if [[ -n "$DOCKER_REGISTRY" && -n "$DOCKER_ID" ]]; then
+  # Only do a push if a registry and a repository have been set.
+  if [[ -n "$DOCKER_REGISTRY" && -n "$DOCKER_REPOSITORY" ]]; then
     docker-compose -f docker-compose.yml push
   fi
   # Restore previous CWD.
@@ -42,27 +42,27 @@ function checkout_and_build() {
 
 # Process options and validate combinations.
 
-while getopts :hi:mr:t:u: OPTION
+while getopts :g:hmp:t:u: OPTION
 do
   case "${OPTION}" in
+    g)
+      export DOCKER_REGISTRY=${OPTARG}/
+      ;;
     h)
       show_usage
       exit 0
       ;;
-    i)
-      export DOCKER_ID=${OPTARG}/
-      ;;
     m)
       MULTI_ARCH=true
       ;;
-    r)
-      export DOCKER_REGISTRY=${OPTARG}/
+    p)
+      export DOCKER_REPOSITORY=${OPTARG}/
       ;;
     t)
       export IMAGE_TAG=${OPTARG}
       ;;
     u)
-      GIT_URL=$(OPTARG)
+      GIT_URL=${OPTARG}
       # Extract the repo name from the URL.
       REPO_NAME=$(basename "$GIT_URL" .git)
       ;;
@@ -84,8 +84,8 @@ if [[ -n "$MULTI_ARCH" && -n "$IMAGE_TAG" ]]; then
   exit 1
 fi
 
-if [[ -n "$DOCKER_REGISTRY" && -z "$DOCKER_ID" ]]; then
-  printf "build: docker Id (repository) must also be set when specifying a registry!\n"
+if [[ -n "$DOCKER_REGISTRY" && -z "$DOCKER_REPOSITORY" ]]; then
+  printf "build: docker repository (id) must also be set when specifying a registry!\n"
   exit 1
 fi
 
@@ -125,10 +125,10 @@ else
   printf -v REGISTRY_USED "Images will be pushed to registry '%s'" "$DOCKER_REGISTRY"
 fi
 
-if [[ -z "$DOCKER_ID" ]]; then
-  printf -v ID_USED "Not set, local image only"
+if [[ -z "$DOCKER_REPOSITORY" ]]; then
+  printf -v REPOSITORY_USED "Not set, local image only"
 else
-  printf -v ID_USED "Images will be tagged with repository '%s'" "$DOCKER_ID"
+  printf -v REPOSITORY_USED "Images will be tagged with repository '%s'" "$DOCKER_REPOSITORY"
 fi
 
 if [[ -n "$MULTI_ARCH" ]]; then
@@ -142,7 +142,7 @@ fi
 printf "Project Git URL         : %s\n" "$GIT_URL"
 printf "Project Name            : %s\n" "$REPO_NAME"
 printf "Docker Registry         : %s\n" "$REGISTRY_USED"
-printf "Docker Id               : %s\n" "$ID_USED"
+printf "Docker Repository (Id)  : %s\n" "$REPOSITORY_USED"
 printf "Image Tag               : %s\n" "$TAG_USED"
 
 # Pre-builds processing.
@@ -153,7 +153,7 @@ mkdir src
 
 # Build the project images.
 
-checkout_and_build "$GIT_URL" "$REPO_NAME"
+#checkout_and_build "$GIT_URL" "$REPO_NAME"
 
 # Post builds processing and exit.
 
