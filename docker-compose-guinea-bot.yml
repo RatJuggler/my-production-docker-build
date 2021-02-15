@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  guinea-bot:
+    image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}guinea-bot:${IMAGE_TAG:-latest}
+    secrets:
+      - source: guinea-bot-secrets
+        target: /src/guinea-bot.env
+    restart: unless-stopped
+
+secrets:
+  guinea-bot-secrets:
+    external: true

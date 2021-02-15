@@ -8,13 +8,6 @@ services:
     restart: unless-stopped
     profiles: ["disabled"]
 
-  guinea-bot:
-    image: ${REGISTRY}${REPOSITORY}/guinea-bot:${IMAGE_TAG:-latest}
-    env_file:
-      - guinea-bot.env
-    restart: unless-stopped
-    profiles: ["disabled"]
-
   dinosauria-bot:
     image: ${REGISTRY}${REPOSITORY}dinosauria-bot:${IMAGE_TAG:-latest}
     env_file:
@@ -23,40 +16,45 @@ services:
     profiles: ["disabled"]
 
   f4rside-site:
-    image: ${REGISTRY}${REPOSITORY}/f4rside-site:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}f4rside-site:${IMAGE_TAG:-latest}
     networks:
       - external-sites
     restart: unless-stopped
+    profiles: ["disabled"]
 
   portfolio-simple:
-    image: ${REGISTRY}${REPOSITORY}/portfolio-simple:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}portfolio-simple:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
+    profiles: ["disabled"]
 
   portfolio-sql:
-    image: ${REGISTRY}${REPOSITORY}/portfolio-sql:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}portfolio-sql:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
+    profiles: ["disabled"]
 
   portfolio-template:
-    image: ${REGISTRY}${REPOSITORY}/portfolio-template:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}portfolio-template:${IMAGE_TAG:-latest}
     depends_on:
       - portfolio-simple
       - portfolio-sql
     networks:
       - portfolio
     restart: unless-stopped
+    profiles: ["disabled"]
 
   portfolio-static:
-    image: ${REGISTRY}${REPOSITORY}/portfolio-static:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}portfolio-static:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
+    profiles: ["disabled"]
 
   portfolio-site:
-    image: ${REGISTRY}${REPOSITORY}/portfolio-site:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}portfolio-site:${IMAGE_TAG:-latest}
     depends_on:
       - portfolio-template
       - portfolio-static
@@ -64,6 +62,7 @@ services:
       - portfolio
       - external-sites
     restart: unless-stopped
+    profiles: ["disabled"]
 
   ingress-proxy:
     image: ingress-proxy-test:local
@@ -75,6 +74,7 @@ services:
     networks:
       - external-sites
     restart: unless-stopped
+    profiles: ["disabled"]
 
 networks:
   portfolio:
