@@ -6,3 +6,22 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    secrets:
+      - source: f4rside-com-crt-v1
+        target: /etc/nginx/certs/f4rside.com.crt
+      - source: f4rside-com-key-v1
+        target: /etc/nginx/certs/f4rside.com.key
+      - source: jurassic-john-site-crt-v1
+        target: /etc/nginx/certs/jurassic-john.site.crt
+      - source: jurassic-john-site-key-v1
+        target: /etc/nginx/certs/jurassic-john.site.key
+
+secrets:
+  f4rside-com-crt-v1:
+    external: true
+  f4rside-com-key-v1:
+    external: true
+  jurassic-john-site-crt-v1:
+    external: true
+  jurassic-john-site-key-v1:
+    external: true
