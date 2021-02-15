@@ -153,7 +153,7 @@ mkdir src
 
 # Build the project images.
 
-#checkout_and_build "$GIT_URL" "$REPO_NAME"
+checkout_and_build "$GIT_URL" "$REPO_NAME"
 
 # Post builds processing and exit.
 
