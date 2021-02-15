@@ -14,11 +14,12 @@ The projects include:
 Each of the projects has had a docker build added to it. I am using scripts to test how the multi-architecture images I need might 
 be created before looking at the CI/CD process proper. The scripts in the `/bin` are as follows:
 
-- build.sh: generic script to build and push images for a given project. 
+- build.sh: generic script to build and push images for a given project.
 - build-project-images.sh: convenience script to build all the projects I want.
 - push-manifest.sh; generic script to create a multi-architecture image from existing tagged images.
-- create-multi-arch-manifests.sh: convenience script to create all the multi-architecture images I want. 
-- build-ingress-proxy.sh: standalone build for the ingress proxy (see deployment).  
+- create-multi-arch-manifests.sh: convenience script to create all the multi-architecture images I want.
+- build-ingress-proxy.sh: standalone build for the ingress proxy (see below).
+- build-golden.sh: standalone build for my [golden images](#golden-images).
 
 The build script clones only the minimum source code required (no history) for each project and then uses the projects compose file 
 to create the images for that project. Options are available to set the registry, docker id (repository) and tag for the generated 
@@ -41,8 +42,10 @@ Options:
 Note: Environment variables must be exported for use in the compose file but can be injected directly into the build files via the 
 build-arg option.
 
-The manifest script expects images to have already been built for the two architectures I need (intel and arm) and then ties these 
-together into a multi-architecture image manifest and pushes that to the supplied registry.
+The push manifest script expects images to have already been built for the two architectures I need (intel and arm) and then ties 
+these together into a multi-architecture image manifest and pushes that to the supplied registry. The push uses the `--purge` 
+option to remove the local version of the manifest after pushing. When the images are updated the manifest can then be updated by 
+rerunning this script which re-creates and re-pushes it.
 ```
 My Docker Multi-Architecture Manifest Builder
 
@@ -110,29 +113,12 @@ I have started to define golden images for re-use and as best practice.
 
 This image includes my mock production configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/my-production).
 
-To build a multi-architecture image I first ran the following on an intel linux machine:
+To build this multi-architecture image I ran the `build-golden.sh` script on an intel linux machine after first setting
+the IMAGE_TAG to *linux-amd64*. I then ran the same script on a Raspberry Pi with the IMAGE_TAG set to *linux-arm*.
 
-    docker image build -f docker/nginx/Golden.dockerfile -t johnchase/golden-nginx:linux-amd64 .
+Then to make the multi-architecture image show up on docker hub I used the `push-manifest.sh` script from the intel linux machine:
 
-    docker image push johnchase/golden-nginx:linux-amd64
-
-And then the following on a Raspberry Pi:
-
-    docker image build -f docker/nginx/Golden.dockerfile -t johnchase/golden-nginx:linux-arm .
-
-    docker image push johnchase/golden-nginx:linux-arm
-
-Then to make the multi-architecture image show up on docker hub I first pulled the ARM image down to the intel machine and then 
-created and pushed a manifest:
-
-    docker image pull johnchase/golden-nginx:linux-arm
-
-    docker manifest create johnchase/golden-nginx:latest johnchase/golden-nginx:linux-amd64 johnchase/golden-nginx:linux-arm
-
-    docker manifest push --purge johnchase/golden-nginx:latest
-
-The `--purge` parameter removes the local version of the manifest after pushing. When the images are updated the manifest can then 
-be updated by recreating and re-pushing it.
+    ./bin/push-manifest.sh -g docker.io -p johnchase -i golden-nginx
 
 Looking in Docker hub it then shows *johnchase/golden-nginx:latest* as being a multi-architecture image.
 

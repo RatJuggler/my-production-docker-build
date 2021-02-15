@@ -1,5 +1,5 @@
 # Add git to base alpine image.
-FROM alpine:3.11 AS builder
+FROM alpine:3.11 AS builder-golden-nginx
 
 RUN apk --no-cache add git
 
@@ -24,5 +24,5 @@ EXPOSE 80
 WORKDIR /srv
 
 # Copy the Nginx configuration files.
-COPY --from=builder src/h5bp/ /etc/nginx/h5bp/
-COPY --from=builder src/mime.types src/nginx.conf /etc/nginx/
+COPY --from=builder-golden-nginx src/h5bp/ /etc/nginx/h5bp/
+COPY --from=builder-golden-nginx src/mime.types src/nginx.conf /etc/nginx/
