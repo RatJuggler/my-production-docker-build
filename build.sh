@@ -1,23 +1,22 @@
 #!/bin/bash
 
 function show_usage() {
-   printf "My Docker Image Builder\n\n"
-   printf "Usage: build [-h] [-i DOCKER_ID] [-m] [-r DOCKER_REGISTRY] [-t IMAGE_TAG]\n\n"
+   printf "My Project Docker Image Builder\n\n"
+   printf "Usage: build [-h] [-g GIT_REPO] [-m] [-i DOCKER_ID] [-r DOCKER_REGISTRY] [-t IMAGE_TAG]\n\n"
    printf "Options:\n"
    printf "  -h                  display this help and exit\n"
+   printf "  -u GIT_URL          the URL of the git repo to run a build for, required\n"
+   printf "  -m                  set the image tag according to the local architecture, overrides '-t'\n"
    printf "  -i DOCKER_ID        set the docker id (repository) to use\n"
-   printf "  -m                  set the image tag according to the local architecture,\n"
-   printf "                        overrides '-t'\n"
-   printf "  -r DOCKER_REGISTRY  set the docker registry to use,\n"
-   printf "                        does NOT default to 'docker.io'\n"
-   printf "  -t IMAGE_TAG        set the image tag to use, defaults to 'latest',\n"
-   printf "                        overridden by '-m'\n"
+   printf "  -r DOCKER_REGISTRY  set the docker registry to use, does NOT default to 'docker.io'\n"
+   printf "  -t IMAGE_TAG        set the image tag to use, defaults to 'latest', overridden by '-m'\n"
 }
 
 function checkout_and_build() {
-  REPO=$1
+  URL=$1
+  REPO=$2
   # Checkout the bare source from repo, no history
-  git clone --single-branch --no-tags --depth 1 https://github.com/RatJuggler/"$REPO".git src/"$REPO"
+  git clone --single-branch --no-tags --depth 1 "$URL".git src/"$REPO"
   # Make repo the CWD.
   cd src/"$REPO" || exit
   # env_file entries must exist for the compose file to be validated so we create a dummy one for building.
@@ -43,7 +42,7 @@ function checkout_and_build() {
 
 # Process options and validate combinations.
 
-while getopts :hi:mr:t: OPTION
+while getopts :hi:mr:t:u: OPTION
 do
   case "${OPTION}" in
     h)
@@ -62,6 +61,11 @@ do
     t)
       export IMAGE_TAG=${OPTARG}
       ;;
+    u)
+      GIT_URL=$(OPTARG)
+      # Extract the repo name from the URL.
+      REPO_NAME=$(basename "$GIT_URL" .git)
+      ;;
     ?)
       printf "build: invalid option -- '%s'\n" "${OPTARG}"
       printf "Try 'build -h' for more information.\n"
@@ -69,6 +73,11 @@ do
       ;;
   esac
 done
+
+if [[ -z "$GIT_URL" ]]; then
+  printf "build: git URL of project must be supplied!\n"
+  exit 1
+fi
 
 if [[ -n "$MULTI_ARCH" && -n "$IMAGE_TAG" ]]; then
   printf "build: image tag cannot be set when multi-architecture option selected!\n"
@@ -130,6 +139,8 @@ else
   printf -v TAG_USED "Images will be tagged with '%s'" "$IMAGE_TAG"
 fi
 
+printf "Project Git URL         : %s\n" "$GIT_URL"
+printf "Project Name            : %s\n" "$REPO_NAME"
 printf "Docker Registry         : %s\n" "$REGISTRY_USED"
 printf "Docker Id               : %s\n" "$ID_USED"
 printf "Image Tag               : %s\n" "$TAG_USED"
@@ -140,25 +151,9 @@ printf "\nClearing down any previous builds...\n"
 rm -rf src
 mkdir src
 
-# Build project images.
+# Build the project images.
 
-checkout_and_build sync-gandi-dns
-checkout_and_build guinea-bot
-checkout_and_build dinosauria-bot
-checkout_and_build f4rside-site
-checkout_and_build developer-portfolio
-
-# Build for the ingress proxy.
-# IMPORTANT: We must *NOT* push the ingress proxy image to a public repository whilst it contains our certificate keys!
-
-docker-compose -f docker-compose.yml build \
-  --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" \
-  --build-arg DOCKER_ID="$DOCKER_ID" \
-  --build-arg BUILD_TAG="$BUILD_TAG"
-docker-compose -f docker-compose-production.yml build \
-  --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" \
-  --build-arg DOCKER_ID="$DOCKER_ID" \
-  --build-arg BUILD_TAG="$BUILD_TAG"
+checkout_and_build "$GIT_URL" "$REPO_NAME"
 
 # Post builds processing and exit.
 
