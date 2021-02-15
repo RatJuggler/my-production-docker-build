@@ -2,14 +2,14 @@
 
 function show_usage() {
    printf "My Project Docker Image Builder\n\n"
-   printf "Usage: build [-h] [-g GIT_REPO] [-m] [-r DOCKER_REGISTRY] [-p DOCKER_REPOSITORY] [-t IMAGE_TAG]\n\n"
+   printf "Usage: build [-h] [-g GIT_REPO] [-m] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]\n\n"
    printf "Options:\n"
-   printf "  -h                    display this help and exit\n"
-   printf "  -u GIT_URL            the URL of the git repo to run a build for, required\n"
-   printf "  -m                    set the image tag according to the local architecture, overrides '-t'\n"
-   printf "  -g DOCKER_REGISTRY    set the docker registry to use, does NOT default to 'docker.io'\n"
-   printf "  -p DOCKER_REPOSITORY  set the docker repository (id) to use\n"
-   printf "  -t IMAGE_TAG          set the image tag to use, defaults to 'latest', overridden by '-m'\n"
+   printf "  -h             display this help and exit\n"
+   printf "  -u GIT_URL     the URL of the git repo to run a build for, required\n"
+   printf "  -m             set the image tag according to the local architecture, overrides '-t'\n"
+   printf "  -g REGISTRY    set the docker registry to use, does NOT default to 'docker.io'\n"
+   printf "  -p REPOSITORY  set the docker repository (id) to use\n"
+   printf "  -t IMAGE_TAG   set the image tag to use, defaults to 'latest', overridden by '-m'\n"
 }
 
 function checkout_and_build() {
@@ -23,11 +23,11 @@ function checkout_and_build() {
   touch "$REPO".env
   # Do the build.
   docker-compose -f docker-compose.yml --profile="builders" build \
-    --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" \
-    --build-arg DOCKER_ID="$DOCKER_REPOSITORY" \
+    --build-arg DOCKER_REGISTRY="$REGISTRY" \
+    --build-arg DOCKER_ID="$REPOSITORY" \
     --build-arg BUILD_TAG="$BUILD_TAG"
   # Only do a push if a registry and a repository have been set.
-  if [[ -n "$DOCKER_REGISTRY" && -n "$DOCKER_REPOSITORY" ]]; then
+  if [[ -n "$REGISTRY" && -n "$REPOSITORY" ]]; then
     docker-compose -f docker-compose.yml push
   fi
   # Restore previous CWD.
@@ -46,7 +46,7 @@ while getopts :g:hmp:t:u: OPTION
 do
   case "${OPTION}" in
     g)
-      export DOCKER_REGISTRY=${OPTARG}/
+      export REGISTRY=${OPTARG}/
       ;;
     h)
       show_usage
@@ -56,7 +56,7 @@ do
       MULTI_ARCH=true
       ;;
     p)
-      export DOCKER_REPOSITORY=${OPTARG}/
+      export REPOSITORY=${OPTARG}/
       ;;
     t)
       export IMAGE_TAG=${OPTARG}
@@ -84,7 +84,7 @@ if [[ -n "$MULTI_ARCH" && -n "$IMAGE_TAG" ]]; then
   exit 1
 fi
 
-if [[ -n "$DOCKER_REGISTRY" && -z "$DOCKER_REPOSITORY" ]]; then
+if [[ -n "$REGISTRY" && -z "$REPOSITORY" ]]; then
   printf "build: docker repository (id) must also be set when specifying a registry!\n"
   exit 1
 fi
@@ -119,16 +119,16 @@ fi
 
 # Show how options will be used.
 
-if [[ -z "$DOCKER_REGISTRY" ]]; then
+if [[ -z "$REGISTRY" ]]; then
   printf -v REGISTRY_USED "Not set, local image only"
 else
-  printf -v REGISTRY_USED "Images will be pushed to registry '%s'" "$DOCKER_REGISTRY"
+  printf -v REGISTRY_USED "Images will be pushed to registry '%s'" "$REGISTRY"
 fi
 
-if [[ -z "$DOCKER_REPOSITORY" ]]; then
+if [[ -z "$REPOSITORY" ]]; then
   printf -v REPOSITORY_USED "Not set, local image only"
 else
-  printf -v REPOSITORY_USED "Images will be tagged with repository '%s'" "$DOCKER_REPOSITORY"
+  printf -v REPOSITORY_USED "Images will be tagged with repository '%s'" "$REPOSITORY"
 fi
 
 if [[ -n "$MULTI_ARCH" ]]; then
