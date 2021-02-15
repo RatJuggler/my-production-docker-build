@@ -8,9 +8,9 @@ x-args: &args
 
 services:
   ingress-proxy:
-    image: ingress-proxy-production:local
+    image: ingress-proxy-production:${IMAGE_TAG:-latest}
     build:
       context: .
-      dockerfile: docker/ingress/production/Dockerfile
+      dockerfile: Dockerfile
       <<: *args
       target: ingress-proxy-production

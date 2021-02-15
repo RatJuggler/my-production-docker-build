@@ -3,17 +3,15 @@
 
 export REGISTRY="docker.io/"
 export REPOSITORY="johnchase/"
-export BUILD_TAG="test"
+export IMAGE_TAG="latest"
+export BUILD_TAG="local"
 
-cd ./docker/ingress/test || exit
-docker-compose -f docker-compose.yml build \
+docker-compose -f ./docker/ingress/test/docker-compose.yml build \
   --build-arg REGISTRY="$REGISTRY" \
   --build-arg REPOSITORY="$REPOSITORY" \
   --build-arg BUILD_TAG="$BUILD_TAG"
-cd ../../..
-cd ./docker/ingress/production || exit
-docker-compose -f docker-compose.yml build \
+
+docker-compose -f ./docker/ingress/production/docker-compose.yml build \
   --build-arg REGISTRY="$REGISTRY" \
   --build-arg REPOSITORY="$REPOSITORY" \
   --build-arg BUILD_TAG="$BUILD_TAG"
-cd ../../..

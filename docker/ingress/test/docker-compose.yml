@@ -8,7 +8,7 @@ x-args: &args
 
 services:
   ingress-proxy:
-    image: ingress-proxy-test:local
+    image: ingress-proxy-test:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: Dockerfile
