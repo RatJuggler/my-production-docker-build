@@ -28,7 +28,7 @@ function checkout_and_build() {
     --build-arg BUILD_TAG="$BUILD_TAG"
   # Only do a push if a registry and a repository have been set.
   if [[ -n "$REGISTRY" && -n "$REPOSITORY" ]]; then
-    docker-compose -f docker-compose.yml push
+    docker-compose -f docker-compose.yml --profile="builders" push
   fi
   # Restore previous CWD.
   cd ../.. || exit
