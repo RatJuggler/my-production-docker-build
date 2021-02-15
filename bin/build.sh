@@ -23,8 +23,8 @@ function checkout_and_build() {
   touch "$REPO".env
   # Do the build.
   docker-compose -f docker-compose.yml --profile="builders" build \
-    --build-arg DOCKER_REGISTRY="$REGISTRY" \
-    --build-arg DOCKER_ID="$REPOSITORY" \
+    --build-arg REGISTRY="$REGISTRY" \
+    --build-arg REPOSITORY="$REPOSITORY" \
     --build-arg BUILD_TAG="$BUILD_TAG"
   # Only do a push if a registry and a repository have been set.
   if [[ -n "$REGISTRY" && -n "$REPOSITORY" ]]; then

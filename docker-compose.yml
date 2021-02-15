@@ -2,46 +2,46 @@ version: '3.8'
 
 services:
   sync-gandi-dns:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}sync-gandi-dns:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}sync-gandi-dns:${IMAGE_TAG:-latest}
     env_file:
       - sync-gandi-dns.env
     restart: unless-stopped
     profiles: ["disabled"]
 
   guinea-bot:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}/guinea-bot:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/guinea-bot:${IMAGE_TAG:-latest}
     env_file:
       - guinea-bot.env
     restart: unless-stopped
     profiles: ["disabled"]
 
   dinosauria-bot:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}dinosauria-bot:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}dinosauria-bot:${IMAGE_TAG:-latest}
     env_file:
       - dinosauria-bot.env
     restart: unless-stopped
     profiles: ["disabled"]
 
   f4rside-site:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}/f4rside-site:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/f4rside-site:${IMAGE_TAG:-latest}
     networks:
       - external-sites
     restart: unless-stopped
 
   portfolio-simple:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-simple:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-simple:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
 
   portfolio-sql:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-sql:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-sql:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
 
   portfolio-template:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-template:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-template:${IMAGE_TAG:-latest}
     depends_on:
       - portfolio-simple
       - portfolio-sql
@@ -50,13 +50,13 @@ services:
     restart: unless-stopped
 
   portfolio-static:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-static:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-static:${IMAGE_TAG:-latest}
     networks:
       - portfolio
     restart: unless-stopped
 
   portfolio-site:
-    image: ${DOCKER_REGISTRY}${DOCKER_ID}/portfolio-site:${IMAGE_TAG:-latest}
+    image: ${REGISTRY}${REPOSITORY}/portfolio-site:${IMAGE_TAG:-latest}
     depends_on:
       - portfolio-template
       - portfolio-static
