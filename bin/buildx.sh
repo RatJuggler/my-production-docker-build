@@ -90,11 +90,7 @@ else
   printf -v REGISTRY_USED "Images will be pushed to registry '%s'" "$REGISTRY"
 fi
 
-if [[ -z "$REPOSITORY" ]]; then
-  printf -v REPOSITORY_USED "Not set, local image only"
-else
-  printf -v REPOSITORY_USED "Images will be tagged with repository '%s'" "$REPOSITORY"
-fi
+printf -v REPOSITORY_USED "Images will be tagged with repository '%s' and pushed" "$REPOSITORY"
 
 if [[ -z "$IMAGE_TAG" ]]; then
   printf -v TAG_USED "Not set, default image tag will be used"
