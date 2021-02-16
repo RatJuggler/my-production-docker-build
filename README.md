@@ -15,8 +15,11 @@ Each of the projects has had a docker build added to it. I am using scripts to t
 be created before looking at the CI/CD process proper. There are two varieties of scripts in the `/bin` directory which can be 
 used:
 
-- One set using the standard docker build and manifest commands to build multi-architecture images in several stages.
-- Another set using the experimental docker buildx command to build multi-architecture images in a single step.
+- [One set](https://github.com/RatJuggler/my-production-docker-build/blob/main/bin/README-BUILD.md) using the standard *docker 
+  build* and *manifest* commands to build multi-architecture images by doing builds on different architectures and then combining 
+  the results.
+- [Another set](https://github.com/RatJuggler/my-production-docker-build/blob/main/bin/README-BUILDX.md) using the experimental 
+  *docker buildx* command to build multi-architecture images with a single command.
 
 Scripts are also defined to build any golden images required, and an additional ingress proxy image to route requests to project's 
 that serve content on request (websites basically). There are two versions of the proxy, a test image without any SSL security and 
@@ -25,7 +28,7 @@ version which creates the ingress proxy image with SSL security and also upgrade
 be injected via secrets (see note on security).
 
 After all the images are built, everything is then tied together in this project with a number of docker-compose files to 
-orchestrate the applications using stacks. This external facing sites are configured with the test ingress proxy by default which 
+orchestrate the applications using stacks. The external facing sites are configured with the test ingress proxy by default which 
 can be overridden for production environments. You can see how the override file will be applied using:
 
     docker-compose -f external-sites.yml -f external-sites-production.yml config
