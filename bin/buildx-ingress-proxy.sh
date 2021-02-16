@@ -5,6 +5,10 @@ export REPOSITORY="johnchase/"
 export IMAGE_TAG="latest"
 export BUILD_TAG="buildx"
 
-docker buildx bake -f ./docker/ingress/test/docker-compose.yml --set *.platform=linux/amd64 --set *.platform=linux/arm/v7 --push
+cd docker/ingress/test || exit
+docker buildx bake -f docker-compose.yml --set *.platform=linux/amd64 --set *.platform=linux/arm/v7 --push
+cd ../../.. || exit
 
-docker buildx bake -f ./docker/ingress/production/docker-compose.yml --set *.platform=linux/amd64 --set *.platform=linux/arm/v7 --push
+cd docker/ingress/production || exit
+docker buildx bake -f docker-compose.yml --set *.platform=linux/amd64 --set *.platform=linux/arm/v7 --push
+cd ../../.. || exit
