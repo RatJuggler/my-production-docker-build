@@ -63,7 +63,8 @@ Options:
 The proxy build convenience script builds an additional ingress proxy image to route requests to project's that serve content on 
 request (websites basically). There are two versions of the proxy, a test image without any SSL security and without the 
 *upgrade-insecure-requests* CSP setting to make testing the full environment easier, and a production environment version which 
-creates the ingress proxy image with the SSL certificates included (see Note on security below) and also upgrades the CSP settings.
+creates the ingress proxy image with SSL security and also upgrades the CSP settings. The SSL certificates can then be injected via
+secrets (see note on security).
 
 After the images are built, everything is then tied together in this project with a docker-compose file to orchestrate the 
 containers. This is configured with the test ingress proxy by default which can be overridden for production environments. You can 
@@ -134,9 +135,10 @@ In no particular order:
 
 - Use buildx for multi-architecture.
 - Build a CI/CD pipeline.
+- Set proper replicas and resource limits.
 - Push images to my own registry.
 - Deployment to a docker swarm across several Raspberry Pi's.
-- Better image tagging.
+- Better image labelling & tagging.
 - Add Portainer as a management dashboard.
 - Implement Anchore analysis and scanning.
 - Add monitoring and health checks.
@@ -149,7 +151,7 @@ In no particular order:
 
 ### Note on security
 
-The site certificates and private keys are bundled with the Nginx ingress proxy image so this is not an ideal solution from a 
-security perspective. Anyone with access to the generated Docker image can retrieve them. This also makes updating the certificates 
-automatically harder as the Docker image must be re-created to include the updates and any running containers then restarted with 
-the new image.
+API keys are injected into the required containers using Docker Swarm secrets. Site certificates and private keys are also injected 
+into the ingress proxy container using secrets, which is better than having them bundled into the image itself but still comes with 
+its own problems. Secrets can't be updated in Docker Swarm so updating the certificate's means creating new secrets and then 
+spinning up a new ingress proxy container referencing the new secrets.
