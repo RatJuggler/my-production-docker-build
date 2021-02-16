@@ -19,7 +19,7 @@ function checkout_and_build() {
   git clone --single-branch --no-tags --depth 1 "$URL".git src/"$REPO"
   # Make repo the CWD.
   cd src/"$REPO" || exit
-  # env_file entries must exist for the compose file to be validated so we create a dummy one for building.
+  # env_file entries must exist for some compose files to be validated so we create a dummy one for building.
   touch "$REPO".env
   # Do the build.
   docker-compose -f docker-compose.yml --profile="builders" build \
@@ -32,8 +32,6 @@ function checkout_and_build() {
   fi
   # Restore previous CWD.
   cd ../.. || exit
-  # Make sure we have an env_file here to allow the local compose file to validate.
-  touch "$REPO".env
 }
 
 # ======================
