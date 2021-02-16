@@ -1,5 +1,9 @@
 # Build golden images.
 
+# The build must be run on intel with the image tag set to 'linux-amd64', then on arm with the image tag set to 'linux-arm'.
+# Multi-architecture images can then be created using:
+#./bin/push-manifest.sh -g docker.io -p johnchase -i golden-nginx
+
 export REGISTRY="docker.io/"
 export REPOSITORY="johnchase/"
 export IMAGE_TAG="linux-amd64"
