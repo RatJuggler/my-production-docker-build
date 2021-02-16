@@ -24,15 +24,16 @@ registry. It will not default the registry to Docker Hub, you have to explicitly
 ```
 My Project Docker Image Builder
 
-Usage: build [-h] [-g GIT_REPO] [-m] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]
+Usage: build [-h] [-g GIT_REPO]  [-c COMPOSE] [-m] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]
 
 Options:
--h             display this help and exit
--u GIT_URL     the URL of the git repo to run a build for, required
--m             set the image tag according to the local architecture, overrides '-t'
--g REGISTRY    set the docker registry to use, defaults to 'docker.io'
--p REPOSITORY  set the docker repository (id) to use, images will be pushed if set
--t IMAGE_TAG   set the image tag to use, defaults to 'latest', overridden by '-m'
+  -h             display this help and exit
+  -u GIT_URL     the URL of the git repo to run a build for, required
+  -c COMPOSE     the docker-compose file to build from, defaults to 'docker-compose.yml'
+  -m             set the image tag according to the local architecture, overrides '-t'
+  -g REGISTRY    set the docker registry to use, defaults to 'docker.io'
+  -p REPOSITORY  set the docker repository (id) to use, images will be pushed if set
+  -t IMAGE_TAG   set the image tag to use, defaults to 'latest', overridden by '-m'
 ```
 Note: Environment variables must be exported for use in the compose file but can be injected directly into the build files via the
 build-arg option.

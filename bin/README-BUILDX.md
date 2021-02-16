@@ -18,6 +18,10 @@ Then to create the builder I used:
     docker buildx create --use --name my-builder --platform linux/amd64 linux-amd64
     docker buildx create --append --name my-builder --platform linux/arm linux-arm
 
+To make *buildx* the default builder I then used:
+
+    docker buildx install
+
 The builder was then available for use:
 ```
 $ docker buildx ls
@@ -45,13 +49,18 @@ set the registry, repository (docker id) and tag for the generated images. Every
 ```
 My Project Multi-Arch Docker Image Builder
 
-Usage: buildx [-h] [-g GIT_REPO] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]
+Usage: buildx [-h] [-g GIT_REPO] [-c COMPOSE] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]
 
 Options:
   -h             display this help and exit
   -u GIT_URL     the URL of the git repo to run a build for, required
+  -c COMPOSE     the docker-compose file to build from, defaults to 'docker-compose.yml'
   -g REGISTRY    set the docker registry to use, defaults to 'docker.io'
   -p REPOSITORY  set the docker repository (id) to use, required
   -t IMAGE_TAG   set the image tag to use, defaults to 'latest'
 ```
 Note: Environment variables must be exported for use in the compose and build files.
+
+To revert to the native builder as default use:
+
+    docker buildx uninstall
