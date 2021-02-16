@@ -30,8 +30,8 @@ Options:
 -h             display this help and exit
 -u GIT_URL     the URL of the git repo to run a build for, required
 -m             set the image tag according to the local architecture, overrides '-t'
--g REGISTRY    set the docker registry to use, does NOT default to 'docker.io'
--p REPOSITORY  set the docker repository (id) to use
+-g REGISTRY    set the docker registry to use, defaults to 'docker.io'
+-p REPOSITORY  set the docker repository (id) to use, images will be pushed if set
 -t IMAGE_TAG   set the image tag to use, defaults to 'latest', overridden by '-m'
 ```
 Note: Environment variables must be exported for use in the compose file but can be injected directly into the build files via the
