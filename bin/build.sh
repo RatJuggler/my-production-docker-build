@@ -2,10 +2,11 @@
 
 function show_usage() {
    printf "My Project Docker Image Builder\n\n"
-   printf "Usage: build [-h] [-g GIT_REPO] [-m] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]\n\n"
+   printf "Usage: build [-h] [-g GIT_REPO]  [-c COMPOSE] [-m] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]\n\n"
    printf "Options:\n"
    printf "  -h             display this help and exit\n"
    printf "  -u GIT_URL     the URL of the git repo to run a build for, required\n"
+   printf "  -c COMPOSE     the docker-compose file to build from, defaults to 'docker-compose.yml'\n"
    printf "  -m             set the image tag according to the local architecture, overrides '-t'\n"
    printf "  -g REGISTRY    set the docker registry to use, defaults to 'docker.io'\n"
    printf "  -p REPOSITORY  set the docker repository (id) to use, images will be pushed if set\n"
@@ -22,13 +23,13 @@ function checkout_and_build() {
   # env_file entries must exist for some compose files to be validated so we create a dummy one for building.
   touch "$REPO".env
   # Do the build.
-  docker-compose -f docker-compose.yml --profile="builders" build \
+  docker-compose -f "$COMPOSE" build \
     --build-arg REGISTRY="$REGISTRY" \
     --build-arg REPOSITORY="$REPOSITORY" \
     --build-arg BUILD_TAG="$BUILD_TAG"
   # Only do a push if a repository have been set.
   if [[ -n "$REPOSITORY" ]]; then
-    docker-compose -f docker-compose.yml --profile="builders" push
+    docker-compose -f "$COMPOSE" push
   fi
   # Restore previous CWD.
   cd ../.. || exit
@@ -40,9 +41,12 @@ function checkout_and_build() {
 
 # Process options and validate combinations.
 
-while getopts :g:hmp:t:u: OPTION
+while getopts :c:g:hmp:t:u: OPTION
 do
   case "${OPTION}" in
+    c)
+      export COMPOSE=${OPTARG}
+      ;;
     g)
       export REGISTRY=${OPTARG}/
       ;;
@@ -75,6 +79,10 @@ done
 if [[ -z "$GIT_URL" ]]; then
   printf "build: git URL of project must be supplied!\n"
   exit 1
+fi
+
+if [[ -z "$COMPOSE" ]]; then
+  export COMPOSE="docker-compose.yml"
 fi
 
 if [[ -n "$MULTI_ARCH" && -n "$IMAGE_TAG" ]]; then
@@ -139,6 +147,7 @@ fi
 
 printf "Project Git URL         : %s\n" "$GIT_URL"
 printf "Project Name            : %s\n" "$REPO_NAME"
+printf "Compose File            : %s\n" "$COMPOSE"
 printf "Docker Registry         : %s\n" "$REGISTRY_USED"
 printf "Docker Repository (Id)  : %s\n" "$REPOSITORY_USED"
 printf "Image Tag               : %s\n" "$TAG_USED"
