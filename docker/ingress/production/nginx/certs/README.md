@@ -1,4 +1,0 @@
-# Certificate files and private keys go in here
-
-Certificate files and private keys can be placed in this folder to be referenced from the ingress proxy Nginx configuration files 
-but *MUST* not be committed to the repository.
