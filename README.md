@@ -1,7 +1,7 @@
 # my-production-docker-build
 
-This is still a work in progress and is my attempt at a unified build/deployment process for the various projects I'm running on my 
-Raspberry Pi farm.
+This is still a work in progress and is my attempt at a unified build/deployment process for the various projects I'm running on a 
+Docker Swarm on my Raspberry Pi farm.
 
 The projects include:
 
@@ -12,73 +12,33 @@ The projects include:
 - [f4side-site](https://github.com/RatJuggler/f4rside-site)
 
 Each of the projects has had a docker build added to it. I am using scripts to test how the multi-architecture images I need might 
-be created before looking at the CI/CD process proper. The scripts in the `/bin` are as follows:
+be created before looking at the CI/CD process proper. There are two varieties of scripts in the `/bin` directory which can be 
+used:
 
-- build.sh: generic script to build and push images for a given project.
-- build-project-images.sh: convenience script to build all the projects I want.
-- push-manifest.sh; generic script to create a multi-architecture image from existing tagged images.
-- create-multi-arch-manifests.sh: convenience script to create all the multi-architecture images I want.
-- build-ingress-proxy.sh: standalone build for the ingress proxy (see below).
-- build-golden.sh: standalone build for my [golden images](#golden-images).
+- One set using the standard docker build and manifest commands to build multi-architecture images in several stages.
+- Another set using the experimental docker buildx command to build multi-architecture images in a single step.
 
-The build script clones only the minimum source code required (no history) for each project and then uses the projects compose file 
-to create the images for that project. Options are available to set the registry, docker id (repository) and tag for the generated 
-images, with an additional multi-architecture option to set the image tag according to the local architecture. If a registry and 
-repository are set the script will attempt to push the images to that registry. It will not default the registry to Docker Hub, 
-you have to explicitly set it:
-```
-My Project Docker Image Builder
+Scripts are also defined to build any golden images required, and an additional ingress proxy image to route requests to project's 
+that serve content on request (websites basically). There are two versions of the proxy, a test image without any SSL security and 
+without the *upgrade-insecure-requests* CSP setting to make testing the full environment easier, and a production environment 
+version which creates the ingress proxy image with SSL security and also upgrades the CSP settings. The SSL certificates can then 
+be injected via secrets (see note on security).
 
-Usage: build [-h] [-g GIT_REPO] [-m] [-r REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]
+After all the images are built, everything is then tied together in this project with a number of docker-compose files to 
+orchestrate the applications using stacks. This external facing sites are configured with the test ingress proxy by default which 
+can be overridden for production environments. You can see how the override file will be applied using:
 
-Options:
--h             display this help and exit
--u GIT_URL     the URL of the git repo to run a build for, required
--m             set the image tag according to the local architecture, overrides '-t'
--g REGISTRY    set the docker registry to use, does NOT default to 'docker.io'
--p REPOSITORY  set the docker repository (id) to use
--t IMAGE_TAG   set the image tag to use, defaults to 'latest', overridden by '-m'
-```
-Note: Environment variables must be exported for use in the compose file but can be injected directly into the build files via the 
-build-arg option.
+    docker-compose -f external-sites.yml -f external-sites-production.yml config
 
-The push manifest script expects images to have already been built for the two architectures I need (intel and arm) and then ties 
-these together into a multi-architecture image manifest and pushes that to the supplied registry. The push uses the `--purge` 
-option to remove the local version of the manifest after pushing. When the images are updated the manifest can then be updated by 
-rerunning this script which re-creates and re-pushes it.
-```
-My Docker Multi-Architecture Manifest Builder
+Then to run in a production swarm environment use:
 
-'linux-amd' and 'linux-arm' images must have already been created and tagged.
+    docker stack deploy -c external-sites.yml -c external-sites-production.yml external-sites
 
-Usage: push-manifest [-h] [-i IMAGE_NAME] [-g REGISTRY] [-p REPOSITORY] [-t IMAGE_TAG]
+### Deployed Result
 
-Options:
--h             display this help and exit
--i IMAGE_NAME  name of the image to make multi-architecture, required
--g REGISTRY    set the docker registry to use, does NOT default to 'docker.io', required
--p REPOSITORY  set the docker repository (id) to use, required
--t IMAGE_TAG   set the manifest image tag to use, defaults to 'latest'
-```
-The proxy build convenience script builds an additional ingress proxy image to route requests to project's that serve content on 
-request (websites basically). There are two versions of the proxy, a test image without any SSL security and without the 
-*upgrade-insecure-requests* CSP setting to make testing the full environment easier, and a production environment version which 
-creates the ingress proxy image with SSL security and also upgrades the CSP settings. The SSL certificates can then be injected via
-secrets (see note on security).
+When everything is built and deployed the result should look something like this (ignoring any replicas):
 
-After the images are built, everything is then tied together in this project with a docker-compose file to orchestrate the 
-containers. This is configured with the test ingress proxy by default which can be overridden for production environments. You can 
-see how the override file will be applied using:
-
-    docker-compose -f docker-compose.yml -f docker-compose-production.yml config
-
-To run the test environment just use:
-
-    docker-compose up -d
-
-For the production environment use:
-
-    docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
+![Image of Architecture](https://github.com/RatJuggler/my-production-docker-build/blob/main/deployed-result.jpg)
 
 ### ARM Images
 
@@ -112,32 +72,16 @@ I have started to define golden images for re-use and as best practice.
 
 #### golden-nginx
 
-This image includes my mock production configuration files from [Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/my-production).
-
-To build this multi-architecture image I ran the `build-golden.sh` script on an intel linux machine after first setting
-the IMAGE_TAG to *linux-amd64*. I then ran the same script on a Raspberry Pi with the IMAGE_TAG set to *linux-arm*.
-
-Then to make the multi-architecture image show up on docker hub I used the `push-manifest.sh` script from the intel linux machine:
-
-    ./bin/push-manifest.sh -g docker.io -p johnchase -i golden-nginx
-
-Looking in Docker hub it then shows *johnchase/golden-nginx:latest* as being a multi-architecture image.
-
-### Deployed Result
-
-When everything is built and deployed the result should look something like this (ignoring any replicas):
-
-![Image of Architecture](https://github.com/RatJuggler/my-production-docker-build/blob/main/deployed-result.jpg)
+I created this image for all my Nginx instances, it includes my mock production configuration files from 
+[Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/my-production).
 
 ### Future ideas:
 
 In no particular order:
 
-- Use buildx for multi-architecture.
 - Build a CI/CD pipeline.
 - Set proper replicas and resource limits.
 - Push images to my own registry.
-- Deployment to a docker swarm across several Raspberry Pi's.
 - Better image labelling & tagging.
 - Add Portainer as a management dashboard.
 - Implement Anchore analysis and scanning.
