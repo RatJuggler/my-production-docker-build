@@ -6,8 +6,8 @@
 ./bin/build-manifest.sh -g docker.io -p johnchase -i f4rside-site
 
 ./bin/build-manifest.sh -g docker.io -p johnchase -i builder-shared-resources
-./bin/build-manifest.sh -g docker.io -p johnchase -i builder-portfolio-simple
-./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-simple
+./bin/build-manifest.sh -g docker.io -p johnchase -i builder-portfolio-map
+./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-map
 ./bin/build-manifest.sh -g docker.io -p johnchase -i builder-portfolio-sql
 ./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-sql
 ./bin/build-manifest.sh -g docker.io -p johnchase -i builder-portfolio-combined

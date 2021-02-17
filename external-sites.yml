@@ -8,8 +8,8 @@ services:
     networks:
       - external-sites
 
-  portfolio-simple:
-    image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/portfolio-simple:${IMAGE_TAG:-latest}
+  portfolio-map:
+    image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/portfolio-map:${IMAGE_TAG:-latest}
     deploy:
       replicas: 1
     networks:
@@ -27,7 +27,7 @@ services:
     deploy:
       replicas: 1
     depends_on:
-      - portfolio-simple
+      - portfolio-map
       - portfolio-sql
     networks:
       - portfolio
