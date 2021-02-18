@@ -18,7 +18,7 @@ function pull_image() {
     printf "push-manifest: no '%s' image found with a '%s' tag!\n" "$IMAGE" "$1"
     exit 1
   fi
-  printf "%s" "$PULL"
+  printf "%s\n" "$PULL"
 }
 
 function create_and_push() {
@@ -31,6 +31,8 @@ function create_and_push() {
   # Only push it and clear down if a registry and a repository have been set.
   if [[ -n "$REGISTRY" && -n "$REPOSITORY" ]]; then
     docker manifest push --purge "$IMAGE":"$IMAGE_TAG"
+    # Final pull to update latest.
+    docker image pull "$IMAGE"
   fi
 }
 
