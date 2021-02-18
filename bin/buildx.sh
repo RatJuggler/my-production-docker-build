@@ -23,8 +23,6 @@ function checkout_and_build() {
   touch "$REPO".env
   # Do the build.
   docker buildx bake -f "$COMPOSE" --set *.platform=linux/amd64 --set *.platform=linux/arm/v7 --push
-  # Final pull to update latest.
-  docker-compose -f "$COMPOSE" pull
   # Restore previous CWD.
   cd ../.. || exit
 }
