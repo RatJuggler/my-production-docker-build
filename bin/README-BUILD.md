@@ -10,9 +10,8 @@ command. There are three stages to this process which must each be actioned manu
 The scripts in the `/bin` directory to help with these steps are as follows:
 
 - `build.sh` : generic script to build and push images for a given project.
-- `build-project-images.sh` : convenience script to build images for all the projects I want.
 - `build-manifest.sh` : generic script to build a multi-architecture image from existing tagged images.
-- `build-multi-arch-manifests.sh` : convenience script to create all the multi-architecture images I want.
+- `build-project-images.sh` : convenience script with command lines to build images for all the projects I want.
 - `build-ingress-proxy.sh` : standalone build for the ingress proxy.
 - `build-golden.sh` : standalone build for my golden images.
 
