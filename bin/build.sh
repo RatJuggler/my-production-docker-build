@@ -23,7 +23,7 @@ function checkout_and_build() {
   # env_file entries must exist for some compose files to be validated so we create a dummy one for building.
   touch "$REPO".env
   # Do the build.
-  docker-compose -f "$COMPOSE" build \
+  docker-compose -f "$COMPOSE" build --pull \
     --build-arg REGISTRY="$REGISTRY" \
     --build-arg REPOSITORY="$REPOSITORY" \
     --build-arg BUILD_TAG="$BUILD_TAG"

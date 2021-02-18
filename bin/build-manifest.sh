@@ -31,8 +31,6 @@ function create_and_push() {
   # Only push it and clear down if a registry and a repository have been set.
   if [[ -n "$REGISTRY" && -n "$REPOSITORY" ]]; then
     docker manifest push --purge "$IMAGE":"$IMAGE_TAG"
-    # Final pull to update latest.
-    docker image pull "$IMAGE"
   fi
 }
 
