@@ -39,7 +39,7 @@ default     default          running linux/amd64, linux/386
 The scripts in the `/bin` directory that use this builder are as follows:
 
 - `buildx.sh` : generic script to build and push images for a given project.
-- `buildx-project-images.sh` : convenience script to build images for all the projects I want.
+- `buildx-project-images.sh` : convenience script with command lines to build images for all the projects I want.
 - `buildx-ingress-proxy.sh` : standalone build for the ingress proxy.
 - `buildx-golden.sh` : standalone build for my golden images.
 

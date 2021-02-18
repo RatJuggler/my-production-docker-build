@@ -5,8 +5,8 @@
 ./bin/buildx.sh -p johnchase -u https://github.com/RatJuggler/dinosauria-bot
 ./bin/buildx.sh -p johnchase -u https://github.com/RatJuggler/f4rside-site
 
-#./bin/buildx.sh -p johnchase -u https://github.com/RatJuggler/developer-portfolio -c docker-compose-shared.yml
+./bin/buildx.sh -p johnchase -u https://github.com/RatJuggler/developer-portfolio -c docker-compose-shared.yml
 
-#./bin/buildx.sh -p johnchase -u https://github.com/RatJuggler/developer-portfolio -c docker-compose-builders.yml
+./bin/buildx.sh -p johnchase -u https://github.com/RatJuggler/developer-portfolio -c docker-compose-builders.yml
 
-#./bin/buildx.sh -p johnchase -u https://github.com/RatJuggler/developer-portfolio
+./bin/buildx.sh -p johnchase -u https://github.com/RatJuggler/developer-portfolio
