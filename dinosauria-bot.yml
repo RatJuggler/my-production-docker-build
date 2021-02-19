@@ -7,7 +7,7 @@ services:
       replicas: 1
     secrets:
       - source: dinosauria-bot-secrets-v1
-        target: /dinosauria-bot/app/dinosauria-bot.env
+        target: /dinosauria-bot/dinosauria-bot.env
 
 secrets:
   dinosauria-bot-secrets-v1:
