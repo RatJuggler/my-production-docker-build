@@ -8,7 +8,12 @@ services:
     secrets:
       - source: guinea-bot-secrets-v1
         target: /src/guinea-bot.env
+    networks:
+      - guinea-bot
 
 secrets:
   guinea-bot-secrets-v1:
     external: true
+
+networks:
+  guinea-bot:

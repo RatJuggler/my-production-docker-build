@@ -8,7 +8,12 @@ services:
     secrets:
       - source: dinosauria-bot-secrets-v1
         target: /dinosauria-bot/dinosauria-bot.env
+    networks:
+      - dinosauria-bot
 
 secrets:
   dinosauria-bot-secrets-v1:
     external: true
+
+networks:
+  dinosauria-bot:
