@@ -1,0 +1,16 @@
+global:
+  scrape_interval:     1m
+  evaluation_interval: 1m
+  external_labels:
+    monitor: 'pi-farm'
+
+scrape_configs:
+  # Make Prometheus scrape itself for metrics.
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'guineabot'
+    metrics_path: /
+    static_configs:
+      - targets: ['threepi:8000']
