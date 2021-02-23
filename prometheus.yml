@@ -26,6 +26,7 @@ scrape_configs:
     static_configs:
       - targets: ['zeropi:9323', 'onepi:9323', 'twopi:9323', 'threepi:9323', 'fourpi:9323', 'fivepi:9323']
 
+  # Job for guineabot should reference container, not host, in swarm mode.
   - job_name: 'guineabot'
     metrics_path: /
     static_configs:

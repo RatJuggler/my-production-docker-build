@@ -5,6 +5,9 @@ services:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/guinea-bot:${IMAGE_TAG:-latest}
     deploy:
       replicas: 1
+    # To expose metrics on (comment out when swarm enabled).
+    ports:
+      - "8000:8000"
     secrets:
       - source: guinea-bot-secrets-v1
         target: /src/guinea-bot.env
