@@ -11,9 +11,9 @@ The projects include:
 - [sync-gandi-dns](https://github.com/RatJuggler/sync-gandi-dns)
 - [f4side-site](https://github.com/RatJuggler/f4rside-site)
 
-Each of the projects has had a docker build added to it. I am using scripts to test how the multi-architecture images I need might 
-be created before looking at the CI/CD process proper. There are two varieties of scripts in the `/bin` directory which can be 
-used:
+Each of the projects has had a docker build added to it with configurations for health checks and metrics added where possible. I 
+am using scripts to test how the multi-architecture images I need might be created before looking at the CI/CD process proper. 
+There are two varieties of scripts in the `/bin` directory which can be used:
 
 - [One set](https://github.com/RatJuggler/my-production-docker-build/blob/main/bin/README-BUILD.md) using the standard *docker 
   build* and *manifest* commands to build multi-architecture images by doing builds on different architectures and then combining 
@@ -29,17 +29,22 @@ be injected via secrets (see note on security).
 
 After all the images are built, everything is then tied together in this project with a number of docker-compose files to 
 orchestrate the applications using stacks. The external facing sites are configured with the test ingress proxy by default which 
-can be overridden for production environments. You can see how the override file will be applied using:
+can be overridden for production environments. You can run this test using:
 
-    docker-compose -f external-sites.yml -f external-sites-production.yml config
-
-Then to run in a production swarm environment use:
-
-    docker stack deploy -c external-sites.yml -c external-sites-production.yml external-sites
+    docker-compose -f external-sites.yml -up -d
 
 ### Deployed Result
 
-When everything is built and deployed the result should look something like this (ignoring any replicas):
+To deploy and run everything into the swarm you need:
+
+    docker stack deploy -c portainer-agent-stack.yml portainer
+    docker stack deploy -c monitoring.yml monitoring
+    docker stack deploy -c sync-gandi-dns.yml sync-gandi-dns
+    docker stack deploy -c dinosauria-bot.yml dinosauria-bot
+    docker stack deploy -c guinea-bot.yml guinea-bot
+    docker stack deploy -c external-sites.yml -c external-sites-production.yml external-sites
+
+The result should look something like this (ignoring any replicas):
 
 ![Image of Architecture](https://github.com/RatJuggler/my-production-docker-build/blob/main/deployed-result.jpg)
 
@@ -86,9 +91,9 @@ In no particular order:
 - Set proper replicas and resource limits.
 - Push images to my own registry.
 - Better image labelling & tagging.
-- Add Portainer as a management dashboard.
 - Implement Anchore analysis and scanning.
-- Add monitoring and health checks.
+- Improve monitoring and health checks.
+- Design some permanent Grafana dashboards.
 - Build images via Docker Hub or GitHub Actions.
 - Test reporting of CSP issues and other errors.
 - Use Traefik instead of Nginx.
