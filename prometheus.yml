@@ -32,6 +32,11 @@ scrape_configs:
     static_configs:
       - targets: ['192.168.1.38:8000']
 
+  # Job for portfolio-template should reference container, not host, in swarm mode.
+  - job_name: 'portfolio_template'
+    static_configs:
+      - targets: ['192.168.1.42:3000']
+
   # Job for portfolio-map should reference container, not host, in swarm mode.
   - job_name: 'portfolio_map'
     metrics_path: '/actuator/prometheus'
