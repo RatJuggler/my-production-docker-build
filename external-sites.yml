@@ -3,6 +3,8 @@ version: '3.8'
 services:
   f4rside-site:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/f4rside-site:${IMAGE_TAG:-latest}
+    ports:
+      - "8000:8000"
     deploy:
       replicas: 1
     networks:
@@ -10,6 +12,8 @@ services:
 
   portfolio-map:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/portfolio-map:${IMAGE_TAG:-latest}
+    ports:
+      - "8001:8001"
     deploy:
       replicas: 1
     networks:
@@ -17,6 +21,8 @@ services:
 
   portfolio-sql:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/portfolio-sql:${IMAGE_TAG:-latest}
+    ports:
+      - "8002:8002"
     deploy:
       replicas: 1
     networks:
@@ -24,6 +30,8 @@ services:
 
   portfolio-template:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/portfolio-template:${IMAGE_TAG:-latest}
+    ports:
+      - "3000:3000"
     deploy:
       replicas: 1
     depends_on:
@@ -34,6 +42,8 @@ services:
 
   portfolio-static:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/portfolio-static:${IMAGE_TAG:-latest}
+    ports:
+      - "8000:8000"
     deploy:
       replicas: 1
     networks:
@@ -41,6 +51,8 @@ services:
 
   portfolio-site:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/portfolio-site:${IMAGE_TAG:-latest}
+    ports:
+      - "8000:8000"
     deploy:
       replicas: 1
     depends_on:
@@ -54,6 +66,7 @@ services:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/ingress-proxy-test:${IMAGE_TAG:-latest}
     ports:
       - "80:80"
+      - "8000:8000"
     deploy:
       replicas: 1
     depends_on:

@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  nginx-exporter-f4rside-site:
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+      - "9113:9113"
+    deploy:
+      replicas: 1
+    environment:
+      - NGINX_RETRIES=3
+      - NGINX_RETRY_INTERVAL=10s
+      - SCRAPE_URI=http://f4side-site:8000/stub_status
+      - TIMEOUT=10s
+      - CONST_LABELS=
+      - LISTEN_ADDRESS=localhost:9113
+      - TELEMETRY_PATH=/metrics
+    depends_on:
+      - prometheus
+      - f4side-site
+    networks:
+      - external-sites
+      - monitor
+
+  nginx-exporter-portfolio-static:
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+      - "9113:9113"
+    deploy:
+      replicas: 1
+    environment:
+      - NGINX_RETRIES=3
+      - NGINX_RETRY_INTERVAL=10s
+      - SCRAPE_URI=http://portfolio-static:8000/stub_status
+      - TIMEOUT=10s
+      - CONST_LABELS=
+      - LISTEN_ADDRESS=localhost:9113
+      - TELEMETRY_PATH=/metrics
+    depends_on:
+      - prometheus
+      - portfolio-static
+    networks:
+      - portfolio
+      - monitor
+
+  nginx-exporter-portfolio-site:
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+      - "9113:9113"
+    deploy:
+      replicas: 1
+    environment:
+      - NGINX_RETRIES=3
+      - NGINX_RETRY_INTERVAL=10s
+      - SCRAPE_URI=http://portfolio-site:8000/stub_status
+      - TIMEOUT=10s
+      - CONST_LABELS=
+      - LISTEN_ADDRESS=localhost:9113
+      - TELEMETRY_PATH=/metrics
+    depends_on:
+      - prometheus
+      - portfolio-site
+    networks:
+      - portfolio
+      - monitor
+
+  nginx-exporter-ingress-proxy:
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+      - "9113:9113"
+    deploy:
+      replicas: 1
+    environment:
+      - NGINX_RETRIES=3
+      - NGINX_RETRY_INTERVAL=10s
+      - SCRAPE_URI=http://ingress-proxy:8000/stub_status
+      - TIMEOUT=10s
+      - CONST_LABELS=
+      - LISTEN_ADDRESS=localhost:9113
+      - TELEMETRY_PATH=/metrics
+    depends_on:
+      - prometheus
+      - ingress-proxy
+    networks:
+      - external-sites
+      - monitor
+
+networks:
+  portfolio:
+  external-sites:
+  monitor:
