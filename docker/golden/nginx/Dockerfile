@@ -21,10 +21,8 @@ LABEL maintainer="John Chase <ratteal@gmail.com>"
 HEALTHCHECK --interval=5m --timeout=10s --start-period=60s --retries=3 \
     CMD ["curl", "--silent", "--fail", "http://localhost:8000/health"]
 
-EXPOSE 80
-
-# Create a folder to serve the site(s) from.
-WORKDIR /srv
+# Image should be used with default HTTP/HTTPS ports and 8000 port for health/metrics.
+EXPOSE 80 443 8000
 
 # Copy the Nginx configuration files.
 COPY --from=builder-golden-nginx src/h5bp/ /etc/nginx/h5bp/
