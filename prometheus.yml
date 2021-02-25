@@ -1,6 +1,6 @@
 global:
-  scrape_interval:     1m
-  evaluation_interval: 1m
+  scrape_interval:     2m
+  evaluation_interval: 2m
   external_labels:
     monitor: 'pi-farm'
 
@@ -26,25 +26,37 @@ scrape_configs:
     static_configs:
       - targets: ['192.168.1.32:9323', '192.168.1.34:9323', '192.168.1.36:9323', '192.168.1.38:9323', '192.168.1.40:9323', '192.168.1.42:9323']
 
-  # Job for guinea-bot should reference container, not host, in swarm mode.
   - job_name: 'guinea_bot'
     metrics_path: /
     static_configs:
-      - targets: ['192.168.1.38:8000']
+      - targets: ['guinea-bot:8000']
 
-  # Job for portfolio-template should reference container, not host, in swarm mode.
-  - job_name: 'portfolio_template'
+  - job_name: 'f4rside_site'
     static_configs:
-      - targets: ['192.168.1.42:3000']
+      - targets: ['nginx-exporter-f4rside-site:9113']
 
-  # Job for portfolio-map should reference container, not host, in swarm mode.
   - job_name: 'portfolio_map'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['192.168.1.42:8001']
+      - targets: ['portfolio-map:8001']
 
-  # Job for portfolio-sql should reference container, not host, in swarm mode.
   - job_name: 'portfolio_sql'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['192.168.1.42:8002']
+      - targets: ['portfolio-sql:8002']
+
+  - job_name: 'portfolio_template'
+    static_configs:
+      - targets: ['portfolio-template:3000']
+
+  - job_name: 'portfolio_static'
+    static_configs:
+      - targets: ['nginx-exporter-portfolio-static:9113']
+
+  - job_name: 'portfolio_site'
+    static_configs:
+      - targets: ['nginx-exporter-portfolio-site:9113']
+
+  - job_name: 'ingress_proxy'
+    static_configs:
+      - targets: ['nginx-exporter-ingress-proxy:9113']
