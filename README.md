@@ -1,6 +1,6 @@
 # my-production-docker-build
 
-This is still a work in progress and is my attempt at a unified build/deployment process for the various projects I'm running on a 
+This is still a work in progress and is my attempt at a unified build/deployment process to get various projects running in a 
 Docker Swarm on my Raspberry Pi farm.
 
 The projects include:
@@ -33,6 +33,9 @@ can be overridden for production environments. You can run this test using:
 
     docker-compose -f external-sites.yml -up -d
 
+The docker-compose files currently expose ports for monitoring so that I can test the various parts of the deployment using 
+different docker hosts not running as a swarm. It should be possible to remove most of these at some point.
+
 ### Deployed Result
 
 To deploy and run everything into the swarm you need:
@@ -42,7 +45,7 @@ To deploy and run everything into the swarm you need:
     docker stack deploy -c sync-gandi-dns.yml sync-gandi-dns
     docker stack deploy -c dinosauria-bot.yml dinosauria-bot
     docker stack deploy -c guinea-bot.yml guinea-bot
-    docker stack deploy -c external-sites.yml -c external-sites-production.yml external-sites
+    docker stack deploy -c external-sites.yml -c monitoring-nginx.yml -c external-sites-production.yml external-sites
 
 The result should look something like this (ignoring any replicas):
 
@@ -81,7 +84,7 @@ I have started to define golden images for re-use and as best practice.
 #### golden-nginx
 
 I created this image for all my Nginx instances, it includes configuration files from my fork of [Nginx Server Configs](https://github.com/RatJuggler/server-configs-nginx)
-and has a simple health check and the basic Nginx metrics exposed.
+and has a simple health check (using the convenient `curl` anti-pattern 😒), and the basic Nginx metrics exposed.
 
 ### Future ideas:
 
