@@ -6,8 +6,8 @@ RUN apk --no-cache add git
 # Create a work area we'll be able to copy files from.
 WORKDIR /src
 
-# Clone the production bracnch of the Nginx configuration files repo.
-RUN git clone --single-branch --no-tags --depth 1 --branch my-production https://github.com/RatJuggler/server-configs-nginx.git .
+# Clone the Nginx configuration files repo.
+RUN git clone --single-branch --no-tags --depth 1 https://github.com/RatJuggler/server-configs-nginx.git .
 
 
 # Create the Nginx web server golden image and include the configuration files.
@@ -26,3 +26,4 @@ WORKDIR /srv
 # Copy the Nginx configuration files.
 COPY --from=builder-golden-nginx src/h5bp/ /etc/nginx/h5bp/
 COPY --from=builder-golden-nginx src/mime.types src/nginx.conf /etc/nginx/
+COPY --from=builder-golden-nginx src/conf.d/metrics.default.conf /etc/nginx/conf.d/metrics.conf

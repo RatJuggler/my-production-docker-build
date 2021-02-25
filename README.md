@@ -80,8 +80,8 @@ I have started to define golden images for re-use and as best practice.
 
 #### golden-nginx
 
-I created this image for all my Nginx instances, it includes my mock production configuration files from 
-[Nginx HTTP server boilerplate configs](https://github.com/RatJuggler/server-configs-nginx/tree/my-production).
+I created this image for all my Nginx instances, it includes configuration files from my fork of [Nginx Server Configs](https://github.com/RatJuggler/server-configs-nginx)
+and has a simple health check and the basic Nginx metrics exposed.
 
 ### Future ideas:
 
