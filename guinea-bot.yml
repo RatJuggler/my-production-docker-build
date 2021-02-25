@@ -3,16 +3,17 @@ version: '3.8'
 services:
   guinea-bot:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/guinea-bot:${IMAGE_TAG:-latest}
-    deploy:
-      replicas: 1
     # To expose metrics on (comment out when swarm enabled).
     ports:
       - "8000:8000"
+    deploy:
+      replicas: 1
     secrets:
       - source: guinea-bot-secrets-v1
         target: /src/guinea-bot.env
     networks:
       - guinea-bot
+      - monitor
 
 secrets:
   guinea-bot-secrets-v1:
@@ -20,3 +21,4 @@ secrets:
 
 networks:
   guinea-bot:
+  monitor:
