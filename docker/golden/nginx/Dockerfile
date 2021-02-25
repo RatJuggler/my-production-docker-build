@@ -10,13 +10,16 @@ WORKDIR /src
 RUN git clone --single-branch --no-tags --depth 1 https://github.com/RatJuggler/server-configs-nginx.git .
 
 
-# Create the Nginx web server golden image and include the configuration files.
+# Create the Nginx web server golden image and copy over the configuration files.
 FROM nginx:stable-alpine AS golden-nginx
 
 ARG BUILD_TAG=local
 LABEL build_tag=${BUILD_TAG}
 LABEL description="My Nginx Golden Image"
 LABEL maintainer="John Chase <ratteal@gmail.com>"
+
+HEALTHCHECK --interval=5m --timeout=10s --start-period=60s --retries=3 \
+    CMD ["curl", "--silent", "--fail", "http://localhost:8000/health"]
 
 EXPOSE 80
 
