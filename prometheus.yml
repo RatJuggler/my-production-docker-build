@@ -26,6 +26,11 @@ scrape_configs:
     static_configs:
       - targets: ['192.168.1.32:9323', '192.168.1.34:9323', '192.168.1.36:9323', '192.168.1.38:9323', '192.168.1.40:9323', '192.168.1.42:9323']
 
+  - job_name: 'pushgateway'
+    scrape_interval: 60m
+    static_configs:
+      - targets: ['pushgateway:9091']
+
   - job_name: 'guinea_bot'
     metrics_path: /
     static_configs:
