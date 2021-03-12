@@ -24,6 +24,7 @@
 # Then create manifests with:
 #./bin/build-manifest.sh -g docker.io -p johnchase -i builder-portfolio-map
 #./bin/build-manifest.sh -g docker.io -p johnchase -i builder-portfolio-sql
+#./bin/build-manifest.sh -g docker.io -p johnchase -i builder-portfolio-react
 #./bin/build-manifest.sh -g docker.io -p johnchase -i builder-portfolio-combined
 
 # Run this build on linux-amd32 and linux-arm:
@@ -32,6 +33,7 @@
 # Then create manifests with:
 #./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-map
 #./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-sql
+#./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-react
 #./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-template
 #./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-static
 #./bin/build-manifest.sh -g docker.io -p johnchase -i portfolio-site
