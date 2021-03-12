@@ -43,6 +43,27 @@ services:
       - portfolio
       - monitor
 
+  nginx-exporter-portfolio-react:
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+      - "9113:9113"
+    deploy:
+      replicas: 1
+    environment:
+      - NGINX_RETRIES=3
+      - NGINX_RETRY_INTERVAL=10s
+      - SCRAPE_URI=http://portfolio-react:8000/stub_status
+      - TIMEOUT=10s
+      - CONST_LABELS=
+      - LISTEN_ADDRESS=localhost:9113
+      - TELEMETRY_PATH=/metrics
+    depends_on:
+      - prometheus
+      - portfolio-react
+    networks:
+      - portfolio
+      - monitor
+
   nginx-exporter-portfolio-site:
     image: nginx/nginx-prometheus-exporter:latest
     ports:

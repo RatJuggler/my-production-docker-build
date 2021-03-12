@@ -58,6 +58,10 @@ scrape_configs:
     static_configs:
       - targets: ['nginx-exporter-portfolio-static:9113']
 
+  - job_name: 'portfolio_react'
+    static_configs:
+      - targets: ['nginx-exporter-portfolio-react:9113']
+
   - job_name: 'portfolio_site'
     static_configs:
       - targets: ['nginx-exporter-portfolio-site:9113']
