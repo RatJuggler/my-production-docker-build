@@ -83,8 +83,9 @@ I have started to define golden images for re-use and as best practice.
 
 #### golden-certbot
 
-I created this image to implement [Certbot](https://certbot.eff.org/) with the [Gandi authentication plugin](https://github.com/obynio/certbot-plugin-gandi) 
-in an ARM/V7 image. This allows me to use [Let's Encrypt](https://letsencrypt.org/) for my certificate renewals. 
+I created this image to implement [Certbot](https://certbot.eff.org/) with an [authenticator plugin](https://github.com/obynio/certbot-plugin-gandi) 
+for [Gandi](https://www.gandi.net/) DNS services in an ARM/V7 image. This allows me to use [Let's Encrypt](https://letsencrypt.org/) 
+for my certificate renewals. 
 
 #### golden-nginx
 
