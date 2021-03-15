@@ -10,3 +10,9 @@ cd docker/golden/nginx || exit
 docker buildx bake -f docker-compose.yml --set *.platform=linux/amd64 --set *.platform=linux/arm/v7 --push
 
 cd ../../.. || exit
+
+cd docker/golden/certbot || exit
+
+docker buildx bake -f docker-compose.yml --set *.platform=linux/amd64 --set *.platform=linux/arm/v7 --push
+
+cd ../../.. || exit
