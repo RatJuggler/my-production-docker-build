@@ -43,9 +43,9 @@ The scripts in the `/bin` directory that use this builder are as follows:
 - `buildx-ingress-proxy.sh` : standalone build for the ingress proxy.
 - `buildx-golden.sh` : standalone build for my golden images.
 
-The `build.sh` script clones only the minimum source code required (no history) for each project and then uses the projects compose
-file to create multi-architectural images for that project using the experimental *build bake* command. The script has options to 
-set the registry, repository (docker id) and tag for the generated images. Everything will be pushed to the registry.
+The `buildx.sh` script clones only the minimum source code required (no history) for each project and then uses the projects 
+compose file to create multi-architectural images for that project using the experimental *build bake* command. The script has 
+options to set the registry, repository (docker id) and tag for the generated images. Everything will be pushed to the registry.
 ```
 My Project Multi-Arch Docker Image Builder
 
@@ -59,7 +59,7 @@ Options:
   -p REPOSITORY  set the docker repository (id) to use, required
   -t IMAGE_TAG   set the image tag to use, defaults to 'latest'
 ```
-Note: Environment variables must be exported for use in the compose and build files.
+Note: Environment variables must be exported for use in the docker compose and build files.
 
 To revert to the native builder as default use:
 
