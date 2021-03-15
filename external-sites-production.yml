@@ -1,6 +1,11 @@
 version: '3.8'
 
 services:
+  certbot-renewals:
+    image: ${REGISTRY}${REPOSITORY}/golden-certbot:${IMAGE_TAG:-latest}
+    volumes:
+      - /home/pi/letsencrypt:/etc/letsencrypt
+
   ingress-proxy:
     image: ${DOCKER_REGISTRY}${DOCKER_REPOSITORY}/ingress-proxy-production:${IMAGE_TAG:-latest}
     ports:
