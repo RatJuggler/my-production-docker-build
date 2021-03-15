@@ -1,0 +1,14 @@
+version: '3.8'
+
+x-args: &args
+  args:
+    BUILD_TAG: ${BUILD_TAG:-local}
+
+services:
+  golden-nginx:
+    image: ${REGISTRY}${REPOSITORY}golden-certbot:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      <<: *args
+      target: golden-certbot
