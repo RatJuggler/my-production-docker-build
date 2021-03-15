@@ -1,13 +1,18 @@
 # Certbot for Let's Encrypt
 
-## Domain setup.
+## Certificate creation
+
 This image is designed to be used with [Gandi](https://www.gandi.net/) as the DNS provider and uses an [authenticatpr plugin](https://github.com/obynio/certbot-plugin-gandi)
 for Gandi. I wanted to keep the certificate renewal process separated from the Nginx configuration which is why I'm using the
 authenticator plugin.
 
-A new domain needs to be registered with Let's Encrypt using the Certbot. Run the image interactively:
+A new domain needs to be registered with Let's Encrypt using the Certbot. A file-system mount is needed so that we can persist the
+certificate files between container image updates and share them with the Nginx Ingress proxy that uses them. We also need it so
+that we can provide the API access token required by the authentication plugin.
+
+Run a container interactively with the desired local file-system mount point:
 ```
-$ docker run -v /home/pi/letsencrypt:/etc/letsencrypt --name certbot -it golden-certbot:latest sh
+$ docker run -v <mount path>/letsencrypt:/etc/letsencrypt --name certbot -it golden-certbot:latest sh
 ```
 Then generate the certificate files for the domain:
 ```
@@ -60,3 +65,8 @@ IMPORTANT NOTES:
 Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
 Donating to EFF:                    https://eff.org/donate-le 
 ```
+One complete you can `exit` the container.
+
+## Certificate renewals
+
+When run normally the image uses a Cron job to check the renewal status of certificates once a week and renews them as required.
