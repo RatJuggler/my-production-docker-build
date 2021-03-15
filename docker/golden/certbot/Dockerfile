@@ -8,3 +8,13 @@ LABEL maintainer="John Chase <ratteal@gmail.com>"
 
 RUN apk add certbot py3-pip
 RUN pip3 install --no-cache-dir -U certbot-plugin-gandi
+
+# Configure the cron job for certificate renewals..
+COPY /crontab.txt /crontab.txt
+RUN /usr/bin/crontab /crontab.txt
+
+# Set scheduler to run.
+COPY /entry.sh /entry.sh
+RUN chmod +x /entry.sh
+
+CMD ["/entry.sh"]
