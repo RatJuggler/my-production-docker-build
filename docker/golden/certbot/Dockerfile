@@ -6,7 +6,7 @@ LABEL build_tag=${BUILD_TAG}
 LABEL description="My Certbot Golden Image"
 LABEL maintainer="John Chase <ratteal@gmail.com>"
 
-RUN apk add certbot py3-pip
+RUN apk add --no-cache certbot py3-pip
 RUN pip3 install --no-cache-dir -U certbot-plugin-gandi
 
 # Overwrite the default schedules with the certificate renewal job.
