@@ -9,12 +9,21 @@ LABEL maintainer="John Chase <ratteal@gmail.com>"
 RUN apk add certbot py3-pip
 RUN pip3 install --no-cache-dir -U certbot-plugin-gandi
 
-# Configure the cron job for certificate renewals..
-COPY /crontab.txt /crontab.txt
-RUN /usr/bin/crontab /crontab.txt
+# Overwrite the default schedules with the certificate renewal job.
+RUN echo "14 3 * * 4   certbot renew --authenticator dns-gandi --dns-gandi-credentials /etc/letsencrypt/gandi/gandi.ini" > /etc/crontabs/root
 
-# Set scheduler to run.
-COPY /entry.sh /entry.sh
-RUN chmod +x /entry.sh
-
-CMD ["/entry.sh"]
+# Start cron running in the foreground.
+#
+#BusyBox v1.32.1 () multi-call binary.
+#
+#Usage: crond -fbS -l N -d N -L LOGFILE -c DIR
+#
+#	-f	Foreground
+#	-b	Background (default)
+#	-S	Log to syslog (default)
+#	-l N	Set log level. Most verbose 0, default 8
+#	-d N	Set log level, log to stderr
+#	-L FILE	Log to FILE
+#	-c DIR	Cron dir. Default:/var/spool/cron/crontabs
+#
+CMD ["crond", "-f"]
